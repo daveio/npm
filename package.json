@@ -1,0 +1,30 @@
+{
+  "name": "dave.io",
+  "version": "0.0.1",
+  "description": "Meta package for Dave Williams",
+  "main": "./src/index.js",
+  "bin": {
+    "dave.io": "./src/cmd.js"
+  },
+  "type": "module",
+  "scripts": {
+    "default": "node src/cmd.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daveio/npm.git"
+  },
+  "author": "Dave Williams",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/daveio/npm/issues"
+  },
+  "homepage": "https://github.com/daveio/npm#readme",
+  "dependencies": {
+    "update-notifier": "^7.3.1"
+  }
+}
