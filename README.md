@@ -6,7 +6,7 @@ With thanks to [zachleat](https://github.com/zachleat)
 
 ## Installation
 
-* [`dave.io` on npm](https://www.npmjs.com/package/dave.io)
+- [`dave.io` on npm](https://www.npmjs.com/package/dave.io)
 
 ```sh
 npm install dave.io
@@ -33,4 +33,4 @@ dave();
 
 ## Changelog
 
-* `v0.0.1` Initial release.
+- `v0.0.1` Initial release.
