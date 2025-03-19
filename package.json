@@ -19,14 +19,14 @@
   },
   "description": "Meta package for Dave Williams",
   "engines": {
-    "bun": "~1.2.4",
+    "bun": "~1.2.5",
     "node": "~22.14.0"
   },
   "homepage": "https://github.com/daveio/npm#readme",
   "license": "MIT",
   "main": "./src/index.js",
   "name": "dave.io",
-  "packageManager": "bun@1.2.4",
+  "packageManager": "bun@1.2.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/daveio/npm.git"
