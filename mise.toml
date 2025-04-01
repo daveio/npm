@@ -5,5 +5,5 @@ DAVE_NPM_MISE_ACTIVE = "true"
 env_file = '.env'
 
 [tools]
-bun = '1.2.4'
-node = '22.14.0'
+bun = '1.2.8'
+node = '23.11.0'
