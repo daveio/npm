@@ -4,10 +4,10 @@ import pkg from "../package.json" with { type: "json" };
 updateNotifier({ pkg }).notify();
 
 export default function () {
-  let intro = `Dave Williams (v${pkg.version})`;
-  let sep = "-".repeat(intro.length);
+	const intro = `Dave Williams (v${pkg.version})`;
+	const sep = "-".repeat(intro.length);
 
-  console.log(`${intro}
+	console.log(`${intro}
 ${sep}
 xxxxxxxx https://xxxxxxx
 xxxxxxxx https://xxxxxxx

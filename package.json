@@ -1,40 +1,39 @@
 {
-  "author": {
-    "email": "dave@dave.io",
-    "name": "Dave Williams",
-    "url": "https://dave.io"
-  },
-  "bin": {
-    "dave.io": "./src/cmd.js"
-  },
-  "bugs": {
-    "url": "https://github.com/daveio/npm/issues"
-  },
-  "dependencies": {
-    "chalk": "5.4.1",
-    "chalk-animation": "2.0.3",
-    "gradient-string": "3.0.0",
-    "ora": "8.2.0",
-    "update-notifier": "7.3.1"
-  },
-  "description": "Meta package for Dave Williams",
-  "engines": {
-    "bun": "~1.2.10",
-    "node": "~23.11.0"
-  },
-  "homepage": "https://github.com/daveio/npm#readme",
-  "license": "MIT",
-  "main": "./src/index.js",
-  "name": "dave.io",
-  "packageManager": "bun@1.2.10",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/daveio/npm.git"
-  },
-  "scripts": {
-    "default": "node src/cmd.js",
-    "test": "node --test"
-  },
-  "type": "module",
-  "version": "0.0.2"
+	"name": "dave.io",
+	"version": "0.0.3",
+	"description": "Meta package for Dave Williams",
+	"homepage": "https://github.com/daveio/npm#readme",
+	"bugs": {
+		"url": "https://github.com/daveio/npm/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/daveio/npm.git"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Dave Williams",
+		"email": "dave@dave.io",
+		"url": "https://dave.io"
+	},
+	"type": "module",
+	"main": "./src/index.js",
+	"bin": {
+		"dave.io": "./src/cmd.js"
+	},
+	"scripts": {
+		"default": "node src/cmd.js",
+		"test": "node --test"
+	},
+	"dependencies": {
+		"chalk": "5.4.1",
+		"chalk-animation": "2.0.3",
+		"gradient-string": "3.0.0",
+		"ora": "8.2.0",
+		"update-notifier": "7.3.1"
+	},
+	"packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f",
+	"engines": {
+		"node": "~23.11.0"
+	}
 }
