@@ -5,4 +5,4 @@ DAVE_NPM_MISE_ACTIVE = 'true'
 env_file = '.env'
 
 [tools]
-node = '23.11.0'
+node = { version = '22.15.0' }
