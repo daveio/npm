@@ -43,7 +43,7 @@ jobs:
       - name: publish-npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bun xnpm publish --provenance --access public
+        run: bun x npm publish --provenance --access public
 
       - name: publish-ghpr
         env:
