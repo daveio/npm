@@ -48,7 +48,7 @@ jobs:
       - name: configure-ghpr
         run: |
           bun x npm config set @daveio:registry=https://npm.pkg.github.com
-          bun x json -I -f package.name -e "@daveio/npm"
+          bun x json -I -f package.json -e "this.name='@daveio/npm'"
 
       - name: publish-ghpr
         env:
