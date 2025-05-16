@@ -17,15 +17,18 @@
     "url": "https://dave.io"
   },
   "type": "module",
-  "main": "./src/index.js",
+  "main": "./src/cmd.ts",
   "bin": {
-    "dave.io": "./src/bin.js"
+    "dave.io": "./dist/cmd.js"
   },
   "scripts": {
-    "default": "node src/cmd.js",
-    "test": "node --test"
+    "start": "bun src/cmd.ts",
+    "make": "bun run clean && bun build --target node src/* --outdir dist",
+    "clean": "rm -rf dist",
+    "test": "bun test"
   },
   "dependencies": {
+    "@types/bun": "^1.2.13",
     "chalk": "5.4.1",
     "chalk-animation": "2.0.3",
     "gradient-string": "3.0.0",
@@ -38,6 +41,7 @@
     "node": "~lts"
   },
   "devDependencies": {
+    "typescript": "^5.4.0",
     "@biomejs/biome": "^1.9.4"
   },
   "trustedDependencies": [
