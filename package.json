@@ -19,7 +19,7 @@
   "type": "module",
   "main": "./src/index.js",
   "bin": {
-    "dave.io": "./src/cmd.js"
+    "dave.io": "./src/bin.js"
   },
   "scripts": {
     "default": "node src/cmd.js",
@@ -36,5 +36,11 @@
   "engines": {
     "bun": "~1.2.13",
     "node": "~lts"
-  }
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
 }
