@@ -4,9 +4,9 @@
 
 Metapackage for Dave Williams.
 
-Yes, that's right. It's a package. For Dave. By Dave. About Dave. If you were expecting more, well, that's on you.
+It's a package. For Dave. By Dave. About Dave. If you were expecting more, well, that's on you.
 
-With thanks - and apologies -to [zachleat](https://github.com/zachleat).
+With thanks - and apologies - to [zachleat](https://github.com/zachleat).
 
 ---
 
