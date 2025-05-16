@@ -5,4 +5,4 @@ tests
 .env
 Dockerfile
 README.md
-*.log
+**/*.log
