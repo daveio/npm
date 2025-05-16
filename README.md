@@ -62,7 +62,7 @@ dave();
 ## Development
 
 - Written in **TypeScript**, because JavaScript wasn't verbose enough.
-- Built with `bun`, because  `npm` and `yarn` are far too mature.
+- Built and tested (no, really) with `bun`, because  `npm` and `yarn` are far too mature.
 - Linted with `biome`, because someone has to care about code style.
 - If you want to contribute, ask yourself: why?
 
