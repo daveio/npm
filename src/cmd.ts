@@ -1,5 +1,5 @@
-import main from "./index.js";
+import main from './index.js'
 
-main();
+main()
 
 export default {}
