@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
   id-token: write
+  packages: write
 
 jobs:
   publish:
@@ -39,7 +40,17 @@ jobs:
           TAG_VERSION=${GITHUB_REF##*/}
           bun x json -I -f package.json -e "this.version='${TAG_VERSION}'"
 
-      - name: push
+      - name: publish-npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: bun x npm publish --provenance --access public
+
+      - name: setup-ghpr
+        run: |
+          npm config set registry https://npm.pkg.github.com
+          npm config set scope @${{ github.repository_owner }}
+
+      - name: publish-ghpr
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bun x npm publish --provenance --access public
