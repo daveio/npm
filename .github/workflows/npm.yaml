@@ -22,6 +22,12 @@ jobs:
         with:
           bun-version: latest
 
+      - name: node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          registry-url: https://registry.npmjs.org
+
       - name: dependencies
         run: bun install
 
@@ -36,4 +42,4 @@ jobs:
       - name: push
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: bun x npm publish --access public
+        run: bun x npm publish --provenance --access public
