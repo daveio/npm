@@ -23,9 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
       - name: analysis
-        uses: codacy/codacy-analysis-cli-action@97bf5df3c09e75f5bcd72695998f96ebd701846e
+        uses: codacy/codacy-analysis-cli-action@09916000460adeeedc96b9704f86deba53e2ad5d
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           verbose: true
@@ -36,6 +36,6 @@ jobs:
       - name: clean
         run: jq '.runs |= unique_by({tool, invocations, results})' < results.sarif > codacy.sarif
       - name: upload
-        uses: github/codeql-action/upload-sarif@1b549b9259bda1cb5ddde3b41741a82a2d15a841
+        uses: github/codeql-action/upload-sarif@57eebf61a2246ab60a0c2f5a85766db783ad3553
         with:
           sarif_file: codacy.sarif

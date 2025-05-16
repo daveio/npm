@@ -16,16 +16,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392
+        uses: docker/setup-qemu-action@737ba1e397ec2caff0d098f75e1136f9a926dc0a
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2
+        uses: docker/setup-buildx-action@e600775e527acba2317260cadb64b7e19efd5362
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@6d4b68b490aef8836e8fb5e50ee7b3bdfa5894f0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -33,7 +33,7 @@ jobs:
 
       - name: Extract metadata (tags, labels)
         id: meta
-        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804
+        uses: docker/metadata-action@418e4b98bf2841bd337d0b24fe63cb36dc8afa55
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
@@ -41,7 +41,7 @@ jobs:
             type=raw,value=latest
 
       - name: Build and push Docker image with provenance
-        uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25
+        uses: docker/build-push-action@0788c444d8b4d67580213712e34a148cae3a6c4e
         with:
           context: .
           file: ./Dockerfile
