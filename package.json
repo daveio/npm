@@ -1,6 +1,6 @@
 {
   "name": "dave.io",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Meta package for Dave Williams",
   "homepage": "https://github.com/daveio/npm#readme",
   "bugs": {
@@ -46,5 +46,7 @@
     "typescript": "^5.8.3",
     "@biomejs/biome": "^1.9.4"
   },
-  "trustedDependencies": ["@biomejs/biome"]
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
 }

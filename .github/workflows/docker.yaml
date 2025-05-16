@@ -3,7 +3,7 @@ name: docker
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 permissions:
   contents: read
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-push:
+  push:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
