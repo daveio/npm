@@ -45,7 +45,12 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun x npm publish --provenance --access public
 
+      - name: configure-ghpr
+        run: |
+          bun x npm config set @daveio:registry=https://npm.pkg.github.com
+          bun x json -I -f package.name -e "@daveio/npm"
+
       - name: publish-ghpr
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bun x npm publish --provenance --access public --scope @daveio --registry https://npm.pkg.github.com
+        run: bun x npm publish --provenance --access public --scope @daveio
