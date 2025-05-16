@@ -1,6 +1,6 @@
 {
   "name": "dave.io",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Meta package for Dave Williams",
   "homepage": "https://github.com/daveio/npm#readme",
   "bugs": {
@@ -25,7 +25,10 @@
     "start": "bun src/cmd.ts",
     "make": "bun run clean && bun build --target node src/* --outdir dist",
     "clean": "rm -rf dist",
-    "test": "bun test"
+    "test": "bun test",
+    "docker:build": "docker build -t dave-io:latest -f Dockerfile .",
+    "docker:run": "docker run -it --rm dave-io:latest",
+    "docker": "bun run docker:build && bun run docker:run"
   },
   "dependencies": {
     "@types/bun": "^1.2.13",
@@ -37,11 +40,10 @@
   },
   "packageManager": "bun@1.2.13",
   "engines": {
-    "bun": "~1.2.13",
-    "node": "~lts"
+    "bun": "~1.2.13"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
+    "typescript": "^5.8.3",
     "@biomejs/biome": "^1.9.4"
   },
   "trustedDependencies": ["@biomejs/biome"]
