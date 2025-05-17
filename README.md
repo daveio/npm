@@ -17,6 +17,7 @@ With thanks - and apologies - to [@zachleat](https://github.com/zachleat).
   - [CLI](#cli)
   - [Programmatic](#programmatic)
 - [Development](#development)
+- [Incoming](#incoming)
 - [Changelog](#changelog)
 - [License](#license)
 - [Just show me the output](#just-show-me-the-output)
@@ -68,6 +69,13 @@ dave();
 - Linted with `biome`, because someone has to care about code style.
 
 If you want to contribute, ask yourself: why?
+
+## Incoming
+
+Believe it or not, features are planned!
+
+- `--cv` / `-c` parameter to dump out my CV.
+- Literally anything useful.
 
 ## Changelog
 
