@@ -75,7 +75,7 @@ If you want to contribute, ask yourself: why?
 Believe it or not, features are planned!
 
 - `--cv` / `-c` parameter to dump out my CV.
-- Fetching links (and CV, when implemented) from a remote.
+- Fetching links (and CV, when implemented) from [my personal API](https://github.com/daveio/api.dave.io).
   - There will always be a static fallback.
 - Literally anything useful.
 
