@@ -3,7 +3,7 @@
 # Use a minimal base image
 FROM alpine:3.21 AS base
 
-# Install dependencies for mise and bun (with version pinning)
+# Install dependencies for bun (with version pinning)
 RUN apk update \
     && apk add --no-cache \
     bash=5.2.37-r0 \
@@ -31,14 +31,20 @@ WORKDIR /app
 RUN curl -fsSL https://bun.sh/install | bash
 ENV PATH="/app/.bun/bin:$PATH"
 
-# Copy project files
-COPY . .
+# Copy package files first to leverage caching
+COPY --chown=dave-io:dave-io package.json bun.lock ./
 
 # Install dependencies using bun
 RUN bun install
 
-# Add a healthcheck to ensure bun is available
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD bun --version || exit 1
+# Copy the rest of the project files
+COPY --chown=dave-io:dave-io . .
+
+# Build the project
+RUN bun run build
+
+# Add a healthcheck to ensure the application is working
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD bun dist/cmd.js || exit 1
 
 # Set the default command to run the CLI
 CMD ["bun", "src/cmd.ts"]

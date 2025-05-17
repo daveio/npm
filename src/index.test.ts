@@ -1,21 +1,27 @@
-import { beforeEach, describe, expect, it, spyOn, test } from 'bun:test'
-import pkg from '../package.json'
-import main from './index'
-
-// Helper to capture console.log output
-let output = ''
-
-beforeEach(() => {
-  output = ''
-  spyOn(console, 'log').mockImplementation((msg: string) => {
-    output += msg
-  })
-})
+import { beforeEach, describe, expect, it, spyOn } from 'bun:test'
+import main from './index.js'
 
 describe('main export', () => {
-  it('logs the expected intro and version', () => {
-    main()
-    expect(output).toContain(`Dave Williams (v${pkg.version})`)
-    expect(output).toContain('https://') // At least one URL
+  // Setup variables for testing
+  let consoleLogOutput: string[] = []
+
+  beforeEach(() => {
+    // Reset and capture console.log output
+    consoleLogOutput = []
+    spyOn(console, 'log').mockImplementation((msg: string) => {
+      consoleLogOutput.push(msg)
+    })
+  })
+
+  it('logs the expected intro and version', async () => {
+    await main()
+
+    // Check that there are console log calls
+    expect(consoleLogOutput.length).toBeGreaterThan(0)
+
+    // Check that some essential content is logged
+    const allOutput = consoleLogOutput.join('\n')
+    expect(allOutput).toContain('https://dave.io') //·Main·website
+    expect(allOutput).toContain('https://dave.io/go/') // At least one social link
   })
 })

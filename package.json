@@ -1,6 +1,6 @@
 {
   "name": "dave.io",
-  "version": "0.0.16",
+  "version": "1.0.0",
   "description": "Meta package for Dave Williams",
   "homepage": "https://github.com/daveio/npm#readme",
   "bugs": {
@@ -17,36 +17,40 @@
     "url": "https://dave.io"
   },
   "type": "module",
-  "main": "./src/cmd.ts",
+  "main": "./dist/cmd.js",
   "bin": {
     "dave.io": "./dist/cmd.js"
   },
+  "files": ["dist"],
   "scripts": {
     "start": "bun src/cmd.ts",
-    "make": "bun run clean && bun build --target node src/* --outdir dist",
+    "build": "bun run clean && bun build --target node --minify --sourcemap ./src/index.ts ./src/cmd.ts --outdir dist",
     "clean": "rm -rf dist",
     "test": "bun test",
+    "lint": "bunx @biomejs/biome check .",
+    "lint:fix": "bunx @biomejs/biome check --apply .",
+    "prepublishOnly": "bun run lint:fix && bun run test && bun run build",
     "docker:build": "docker build -t dave-io:latest -f Dockerfile .",
     "docker:run": "docker run -it --rm dave-io:latest",
     "docker": "bun run docker:build && bun run docker:run"
   },
   "dependencies": {
-    "@types/bun": "^1.2.13",
     "chalk": "5.4.1",
     "chalk-animation": "2.0.3",
+    "cli-table3": "^0.6.3",
     "gradient-string": "3.0.0",
     "ora": "8.2.0",
     "update-notifier": "7.3.1"
   },
   "packageManager": "bun@1.2.13",
   "engines": {
-    "bun": "~1.2.13"
+    "bun": "~1.2.13",
+    "node": ">=18.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.8.3",
-    "@biomejs/biome": "^1.9.4"
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "^1.2.13",
+    "typescript": "^5.8.3"
   },
-  "trustedDependencies": [
-    "@biomejs/biome"
-  ]
+  "trustedDependencies": ["@biomejs/biome"]
 }

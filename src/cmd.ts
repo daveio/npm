@@ -1,5 +1,11 @@
-import main from './index.js'
+#!/usr/bin/env bun
 
-main()
+import index from './index.js'
+
+// Execute the main function
+index().catch((error: Error) => {
+  console.error('An error occurred:', error)
+  process.exit(1)
+})
 
 export default {}

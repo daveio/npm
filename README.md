@@ -62,14 +62,14 @@ dave();
 ## Development
 
 - Written in **TypeScript**, because JavaScript wasn't verbose enough.
-- Built and tested (no, really) with `bun`, because  `npm` and `yarn` are far too mature.
+- Built and tested (no, really) with `bun`, because  `npm` and `yarn` don't break enough.
 - Linted with `biome`, because someone has to care about code style.
-- If you want to contribute, ask yourself: why?
+
+If you want to contribute, ask yourself: why?
 
 ## Changelog
 
-- `v0.0.1` Initial release. The world was forever changed.
-- `v0.0.3` (current) Still does almost nothing, but does it with more dependencies.
+- `1.0.0` First release! May angels rejoice.
 
 ## License
 
