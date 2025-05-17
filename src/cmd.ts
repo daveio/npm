@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import index from './index.js'
+import index from './index.ts'
 
 // Execute the main function
 index().catch((error: Error) => {
