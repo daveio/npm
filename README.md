@@ -6,7 +6,7 @@ Metapackage for Dave Williams.
 
 It's a package. For Dave. By Dave. About Dave. If you were expecting more, well, that's on you.
 
-With thanks - and apologies - to @zachleat.
+With thanks - and apologies - to [@zachleat](https://github.com/zachleat)
 
 ---
 
