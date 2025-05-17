@@ -16,6 +16,11 @@ if (notifier.update) {
 // Define timeout as a utility function for better readability
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms))
 
+// OSC-8 hyperlink utility function to make terminal links clickable
+const terminalLink = (text: string, url: string): string => {
+  return `\u001B]8;;${url}\u0007${text}\u001B]8;;\u0007`
+}
+
 // Define social media link type for better type safety
 interface SocialLink {
   icon: string
@@ -71,84 +76,84 @@ export default async function (): Promise<void> {
       name: 'Bluesky',
       url: 'https://dave.io/go/bluesky',
       color: chalk.yellow,
-      link: (text) => chalk.underline(chalk.yellow(text))
+      link: (text) => terminalLink(chalk.underline(chalk.yellow(text)), 'https://dave.io/go/bluesky')
     },
     {
       icon: '📓',
       name: 'Dreamwidth',
       url: 'https://dave.io/go/dreamwidth',
       color: chalk.green,
-      link: (text) => chalk.underline(chalk.green(text))
+      link: (text) => terminalLink(chalk.underline(chalk.green(text)), 'https://dave.io/go/dreamwidth')
     },
     {
       icon: '📘',
       name: 'Facebook',
       url: 'https://dave.io/go/facebook',
       color: chalk.blue,
-      link: (text) => chalk.underline(chalk.blue(text))
+      link: (text) => terminalLink(chalk.underline(chalk.blue(text)), 'https://dave.io/go/facebook')
     },
     {
       icon: '🐙',
       name: 'GitHub',
       url: 'https://dave.io/go/github',
       color: chalk.magenta,
-      link: (text) => chalk.underline(chalk.magenta(text))
+      link: (text) => terminalLink(chalk.underline(chalk.magenta(text)), 'https://dave.io/go/github')
     },
     {
       icon: '📷',
       name: 'Instagram',
       url: 'https://dave.io/go/instagram',
       color: chalk.red,
-      link: (text) => chalk.underline(chalk.red(text))
+      link: (text) => terminalLink(chalk.underline(chalk.red(text)), 'https://dave.io/go/instagram')
     },
     {
       icon: '🔗',
       name: 'LinkedIn',
       url: 'https://dave.io/go/linkedin',
       color: chalk.yellow,
-      link: (text) => chalk.underline(chalk.yellow(text))
+      link: (text) => terminalLink(chalk.underline(chalk.yellow(text)), 'https://dave.io/go/linkedin')
     },
     {
       icon: '🐘',
       name: 'Mastodon',
       url: 'https://dave.io/go/mastodon',
       color: chalk.green,
-      link: (text) => chalk.underline(chalk.green(text))
+      link: (text) => terminalLink(chalk.underline(chalk.green(text)), 'https://dave.io/go/mastodon')
     },
     {
       icon: '🔮',
       name: 'Pillowfort',
       url: 'https://dave.io/go/pillowfort',
       color: chalk.blue,
-      link: (text) => chalk.underline(chalk.blue(text))
+      link: (text) => terminalLink(chalk.underline(chalk.blue(text)), 'https://dave.io/go/pillowfort')
     },
     {
       icon: '🧵',
       name: 'Threads',
       url: 'https://dave.io/go/threads',
       color: chalk.magenta,
-      link: (text) => chalk.underline(chalk.magenta(text))
+      link: (text) => terminalLink(chalk.underline(chalk.magenta(text)), 'https://dave.io/go/threads')
     },
     {
       icon: '📱',
       name: 'Tumblr',
       url: 'https://dave.io/go/tumblr',
       color: chalk.red,
-      link: (text) => chalk.underline(chalk.red(text))
+      link: (text) => terminalLink(chalk.underline(chalk.red(text)), 'https://dave.io/go/tumblr')
     },
     {
       icon: '🎥',
       name: 'YouTube',
       url: 'https://dave.io/go/youtube',
       color: chalk.yellow,
-      link: (text) => chalk.underline(chalk.yellow(text))
+      link: (text) => terminalLink(chalk.underline(chalk.yellow(text)), 'https://dave.io/go/youtube')
     },
     {
       icon: '☠️',
       name: 'Twitter',
       url: "We don't use Twitter any more.",
       color: chalk.dim,
-      link: (text) => chalk.dim(text)
+      link: (text) => chalk.dim(text) // No link for Twitter
     }
   ]
 
@@ -182,14 +187,14 @@ export default async function (): Promise<void> {
 
   // Add content to table
   table.push(
-    [chalk.greenBright('🌐 Web'), chalk.underline(chalk.white('https://dave.io'))],
+    [chalk.greenBright('🌐 Web'), terminalLink(chalk.underline(chalk.white('https://dave.io')), 'https://dave.io')],
     [], // Empty row for spacing
     ...links.map((link) => [link.color(`${link.icon} ${link.name}`), link.link(link.url)]),
     [],
-    [chalk.greenBright('💼 Check out my CV'), chalk.underline(chalk.white('https://dave.io/go/cv'))],
-    [chalk.greenBright('🧩 Give me a TODO'), chalk.underline(chalk.white('https://dave.io/go/todo'))],
-    [chalk.greenBright('🎤 Enjoy this talk'), chalk.underline(chalk.white('https://dave.io/go/wat'))],
-    [chalk.greenBright('🦜 Read this story'), chalk.underline(chalk.white('https://dave.io/go/blit'))]
+    [chalk.greenBright('💼 Check out my CV'), terminalLink(chalk.underline(chalk.white('https://dave.io/go/cv')), 'https://dave.io/go/cv')],
+    [chalk.greenBright('🧩 Give me a TODO'), terminalLink(chalk.underline(chalk.white('https://dave.io/go/todo')), 'https://dave.io/go/todo')],
+    [chalk.greenBright('🎤 Enjoy this talk'), terminalLink(chalk.underline(chalk.white('https://dave.io/go/wat')), 'https://dave.io/go/wat')],
+    [chalk.greenBright('🦜 Read this story'), terminalLink(chalk.underline(chalk.white('https://dave.io/go/blit')), 'https://dave.io/go/blit')]
   )
 
   // Display the table
