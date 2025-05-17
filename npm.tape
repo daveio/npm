@@ -9,8 +9,8 @@ Require bun
 Set Shell "fish"
 Set FontFamily "VictorMono Nerd Font"
 Set FontSize 16
-Set Width 1200
-Set Height 780
+Set Width 850
+Set Height 850
 
 Type "npx dave.io" Sleep 500ms  Enter
 
