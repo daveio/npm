@@ -16,8 +16,10 @@ With thanks - and apologies - to [@zachleat](https://github.com/zachleat).
 - [Usage](#usage)
   - [CLI](#cli)
   - [Programmatic](#programmatic)
+- [Development](#development)
 - [Changelog](#changelog)
 - [License](#license)
+- [Just show me the output](#just-show-me-the-output)
 
 ---
 
@@ -77,3 +79,9 @@ If you want to contribute, ask yourself: why?
 MIT.
 
 Because you should be free to do whatever you want with this, including ignoring it entirely.
+
+## Just show me the output
+
+Oh, alright then.
+
+![Output](assets/npm.gif)

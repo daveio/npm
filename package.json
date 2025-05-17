@@ -32,7 +32,8 @@
     "prepublishOnly": "bun run lint:fix && bun run test && bun run build",
     "docker:build": "docker build -t dave-io:latest -f Dockerfile .",
     "docker:run": "docker run -it --rm dave-io:latest",
-    "docker": "bun run docker:build && bun run docker:run"
+    "docker": "bun run docker:build && bun run docker:run",
+    "gif": "cd .. && vhs npm/npm.tape"
   },
   "dependencies": {
     "chalk": "5.4.1",
