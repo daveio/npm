@@ -1,6 +1,6 @@
 {
   "name": "dave.io",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Meta package for Dave Williams",
   "homepage": "https://github.com/daveio/npm#readme",
   "bugs": {
@@ -37,15 +37,14 @@
   "dependencies": {
     "chalk": "5.4.1",
     "chalk-animation": "2.0.3",
-    "cli-table3": "^0.6.3",
+    "cli-table3": "^0.6.5",
     "gradient-string": "3.0.0",
     "ora": "8.2.0",
     "update-notifier": "7.3.1"
   },
   "packageManager": "bun@1.2.13",
   "engines": {
-    "bun": "~1.2.13",
-    "node": ">=18.0.0"
+    "bun": "~1.2.13"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

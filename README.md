@@ -70,6 +70,7 @@ If you want to contribute, ask yourself: why?
 ## Changelog
 
 - `1.0.1` First release! May angels rejoice.
+- `1.0.2` (current) Minor dependency bump and twiddle to remove Node from `engines`.
 
 ## License
 
