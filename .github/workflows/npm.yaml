@@ -33,7 +33,7 @@ jobs:
         run: bun install
 
       - name: package
-        run: bun run make
+        run: bun run build
 
       - name: version
         run: |
