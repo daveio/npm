@@ -69,7 +69,7 @@ If you want to contribute, ask yourself: why?
 
 ## Changelog
 
-- `1.0.0` First release! May angels rejoice.
+- `1.0.1` First release! May angels rejoice.
 
 ## License
 
