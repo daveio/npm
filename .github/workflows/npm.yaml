@@ -1,15 +1,12 @@
 name: npm
-
-on:
+"on":
   push:
     tags:
-      - '*'
-
+      - "*"
 permissions:
   contents: read
   id-token: write
   packages: write
-
 jobs:
   publish:
     name: publish
@@ -17,39 +14,31 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
-
       - name: bun
         uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76
         with:
           bun-version: latest
-
       - name: node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22.x
           registry-url: https://registry.npmjs.org
-
       - name: dependencies
         run: bun install
-
       - name: package
         run: bun run build
-
       - name: version
         run: |
           TAG_VERSION=${GITHUB_REF##*/}
           bun x json -I -f package.json -e "this.version='${TAG_VERSION}'"
-
       - name: publish-npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun x npm publish --provenance --access public
-
       - name: configure-ghpr
         run: |
           echo "@daveio:registry=https://npm.pkg.github.com" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
           bun x json -I -f package.json -e "this.name='@daveio/npm'"
-
       - name: publish-ghpr
         run: bun x npm publish --provenance --access public --scope @daveio

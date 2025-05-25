@@ -1,13 +1,12 @@
 name: ci
-
 permissions: read-all
-
-on:
+"on":
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
-
+    branches:
+      - main
 jobs:
   lint:
     name: lint
@@ -16,8 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
       - name: Lint with Trunk
-        uses: trunk-io/trunk-action@b8812b3da2f527db878ef7541c4177f8d280cd89
-
+        uses: trunk-io/trunk-action@75699af9e26881e564e9d832ef7dc3af25ec031b
   test:
     name: test
     runs-on: ubuntu-latest
