@@ -18,14 +18,14 @@ jobs:
       - name: buildx
         uses: docker/setup-buildx-action@3f1544eb9eff0b4d4d279b33f704a06fcf8d0e43
       - name: login
-        uses: docker/login-action@6d4b68b490aef8836e8fb5e50ee7b3bdfa5894f0
+        uses: docker/login-action@3d100841f68d4548bf57e52eb27bd33ec5069f55
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: metadata
         id: meta
-        uses: docker/metadata-action@418e4b98bf2841bd337d0b24fe63cb36dc8afa55
+        uses: docker/metadata-action@85eb7c932431ce77e2adbe1e8eeb47e9dba3d91c
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
