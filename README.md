@@ -26,7 +26,7 @@ With thanks - and apologies - to [@zachleat](https://github.com/zachleat).
 
 ## Why?
 
-![it is a mystery](assets/mystery.png)
+![it is a mystery](assets/mystery.webp)
 
 ## Usage
 
@@ -82,7 +82,10 @@ Believe it or not, features are planned!
 ## Changelog
 
 - `1.0.1` First release! May angels rejoice.
-- `1.0.2` (current) Minor dependency bump and twiddle to remove Node from `engines`.
+- `1.0.2` Minor dependency bump and twiddle to remove Node from `engines`.
+- `1.0.3` _yanked_
+- `1.0.4` _yanked_
+- `1.0.5` **(current)** Add pronouns to the output.
 
 ## License
 
@@ -94,4 +97,4 @@ Because you should be free to do whatever you want with this, including ignoring
 
 Oh, alright then.
 
-![Output](assets/npm.gif)
+![Output](assets/npm.webp)

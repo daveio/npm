@@ -12,6 +12,6 @@ Set FontSize 16
 Set Width 850
 Set Height 850
 
-Type "npx dave.io" Sleep 500ms  Enter
+Type "npx ./npm/" Sleep 500ms  Enter
 
 Sleep 15s
