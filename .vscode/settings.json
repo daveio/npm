@@ -1,13 +1,13 @@
 {
   "debug.javascript.defaultRuntimeExecutable": {
-    "pwa-node": "${workspaceFolder}/.vscode/mise-tools/node"
+    "pwa-node": "/Users/dave/.local/share/mise/shims/node"
   },
-  "python.defaultInterpreterPath": "${workspaceFolder}/.vscode/mise-tools/python",
-  "go.goroot": "${workspaceFolder}/.vscode/mise-tools/goRoot",
+  "python.defaultInterpreterPath": "/Users/dave/.local/share/mise/installs/python/3.13.5/bin/python",
+  "go.goroot": "/Users/dave/.local/share/mise/installs/go/1.24.4",
   "go.alternateTools": {
-    "go": "${workspaceFolder}/.vscode/mise-tools/go",
+    "go": "/Users/dave/.local/share/mise/shims/go",
     "dlv": "${workspaceFolder}/.vscode/mise-tools/dlv",
-    "gopls": "${workspaceFolder}/.vscode/mise-tools/gopls"
+    "gopls": "/Users/dave/.local/share/mise/shims/gopls"
   },
   "workbench.colorCustomizations": {}
 }

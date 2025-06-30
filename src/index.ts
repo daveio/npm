@@ -188,7 +188,9 @@ export default async function (): Promise<void> {
   // Add content to table
   table.push(
     [chalk.greenBright('🌐 Web'), terminalLink(chalk.underline(chalk.white('https://dave.io')), 'https://dave.io')],
-    [], // Empty row for spacing
+    [],
+    [chalk.blue('⚧️ Pronouns'), terminalLink(chalk.underline(chalk.white('they/them')), 'https://dave.io/gender')],
+    [],
     ...links.map((link) => [link.color(`${link.icon} ${link.name}`), link.link(link.url)]),
     [],
     [chalk.greenBright('💼 Check out my CV'), terminalLink(chalk.underline(chalk.white('https://dave.io/go/cv')), 'https://dave.io/go/cv')],

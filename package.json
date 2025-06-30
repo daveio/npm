@@ -1,6 +1,6 @@
 {
   "name": "dave.io",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Meta package for Dave Williams",
   "homepage": "https://github.com/daveio/npm#readme",
   "bugs": {
@@ -21,7 +21,9 @@
   "bin": {
     "dave.io": "./dist/cmd.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "start": "bun src/cmd.ts",
     "build": "bun run clean && bun build --target node --minify --sourcemap ./src/index.ts ./src/cmd.ts --outdir dist",
@@ -36,21 +38,23 @@
     "gif": "cd .. && vhs npm/npm.tape"
   },
   "dependencies": {
-    "chalk": "5.4.1",
-    "chalk-animation": "2.0.3",
+    "chalk": "^5.4.1",
+    "chalk-animation": "^2.0.3",
     "cli-table3": "^0.6.5",
-    "gradient-string": "3.0.0",
-    "ora": "8.2.0",
-    "update-notifier": "7.3.1"
+    "gradient-string": "^3.0.0",
+    "ora": "^8.2.0",
+    "update-notifier": "^7.3.1"
   },
-  "packageManager": "bun@1.2.13",
+  "packageManager": "bun@1.2.17",
   "engines": {
-    "bun": "~1.2.13"
+    "bun": "~1.2.17"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.0.0",
-    "@types/bun": "^1.2.13",
+    "@biomejs/biome": "^2.0.6",
+    "@types/bun": "^1.2.17",
     "typescript": "^5.8.3"
   },
-  "trustedDependencies": ["@biomejs/biome"]
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
 }
