@@ -193,10 +193,22 @@ export default async function (): Promise<void> {
     [],
     ...links.map((link) => [link.color(`${link.icon} ${link.name}`), link.link(link.url)]),
     [],
-    [chalk.greenBright('💼 Check out my CV'), terminalLink(chalk.underline(chalk.white('https://dave.io/go/cv')), 'https://dave.io/go/cv')],
-    [chalk.greenBright('🧩 Give me a TODO'), terminalLink(chalk.underline(chalk.white('https://dave.io/go/todo')), 'https://dave.io/go/todo')],
-    [chalk.greenBright('🎤 Enjoy this talk'), terminalLink(chalk.underline(chalk.white('https://dave.io/go/wat')), 'https://dave.io/go/wat')],
-    [chalk.greenBright('🦜 Read this story'), terminalLink(chalk.underline(chalk.white('https://dave.io/go/blit')), 'https://dave.io/go/blit')]
+    [
+      chalk.greenBright('💼 Check out my CV'),
+      terminalLink(chalk.underline(chalk.white('https://dave.io/go/cv')), 'https://dave.io/go/cv')
+    ],
+    [
+      chalk.greenBright('🧩 Give me a TODO'),
+      terminalLink(chalk.underline(chalk.white('https://dave.io/go/todo')), 'https://dave.io/go/todo')
+    ],
+    [
+      chalk.greenBright('🎤 Enjoy this talk'),
+      terminalLink(chalk.underline(chalk.white('https://dave.io/go/wat')), 'https://dave.io/go/wat')
+    ],
+    [
+      chalk.greenBright('🦜 Read this story'),
+      terminalLink(chalk.underline(chalk.white('https://dave.io/go/blit')), 'https://dave.io/go/blit')
+    ]
   )
 
   // Display the table
