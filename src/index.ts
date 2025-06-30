@@ -189,7 +189,7 @@ export default async function (): Promise<void> {
   table.push(
     [chalk.greenBright('🌐 Web'), terminalLink(chalk.underline(chalk.white('https://dave.io')), 'https://dave.io')],
     [],
-    [chalk.blue('⚧️ Pronouns'), terminalLink(chalk.underline(chalk.white('they/them')), 'https://dave.io/gender')],
+    [chalk.blue('⚧  Pronouns'), terminalLink(chalk.underline(chalk.white('they/them')), 'https://dave.io/gender')],
     [],
     ...links.map((link) => [link.color(`${link.icon} ${link.name}`), link.link(link.url)]),
     [],

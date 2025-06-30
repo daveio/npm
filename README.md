@@ -12,15 +12,17 @@ With thanks - and apologies - to [@zachleat](https://github.com/zachleat).
 
 ## Table of Contents
 
-- [Why?](#why)
-- [Usage](#usage)
-  - [CLI](#cli)
-  - [Programmatic](#programmatic)
-- [Development](#development)
-- [Incoming](#incoming)
-- [Changelog](#changelog)
-- [License](#license)
-- [Just show me the output](#just-show-me-the-output)
+- [`dave.io`](#daveio)
+  - [Table of Contents](#table-of-contents)
+  - [Why?](#why)
+  - [Usage](#usage)
+    - [CLI](#cli)
+    - [Programmatic](#programmatic)
+  - [Development](#development)
+  - [Incoming](#incoming)
+  - [Changelog](#changelog)
+  - [License](#license)
+  - [Just show me the output](#just-show-me-the-output)
 
 ---
 
@@ -85,7 +87,8 @@ Believe it or not, features are planned!
 - `1.0.2` Minor dependency bump and twiddle to remove Node from `engines`.
 - `1.0.3` _yanked_
 - `1.0.4` _yanked_
-- `1.0.5` **(current)** Add pronouns to the output.
+- `1.0.5` _yanked_
+- `1.0.6` **(current)** Add pronouns to the output and update Docker pins.
 
 ## License
 

@@ -1,6 +1,6 @@
 {
   "name": "dave.io",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Meta package for Dave Williams",
   "homepage": "https://github.com/daveio/npm#readme",
   "bugs": {
@@ -35,7 +35,7 @@
     "docker:build": "docker build -t dave-io:latest -f Dockerfile .",
     "docker:run": "docker run -it --rm dave-io:latest",
     "docker": "bun run docker:build && bun run docker:run",
-    "demo": "cd .. && vhs npm/npm.tape && gif2webp -lossy -q 70 -m 6 -f 100 -min_size -mt -v npm/assets/npm.gif -o npm/assets/npm.webp && rm npm/assets/npm.gif"
+    "tape": "vhs npm.tape && gif2webp -mixed -sharp_yuv -m 6 -min_size -mt -v assets/npm.gif -o assets/npm.webp && rm assets/npm.gif"
   },
   "dependencies": {
     "chalk": "^5.4.1",

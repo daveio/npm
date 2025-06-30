@@ -1,16 +1,16 @@
 # syntax=docker/dockerfile:1
 
 # Use a minimal base image
-FROM alpine:3.22 AS base
+FROM alpine:3.22.0 AS base
 
 # Install dependencies for bun (with version pinning)
 RUN apk update \
     && apk add --no-cache \
     bash=5.2.37-r0 \
-    ca-certificates=20241121-r1 \
-    curl=8.12.1-r1 \
-    libstdc++=14.2.0-r4 \
-    libgcc=14.2.0-r4
+    ca-certificates=20241121-r2 \
+    curl=8.14.1-r1 \
+    libstdc++=14.2.0-r6 \
+    libgcc=14.2.0-r6
 
 # Set shell with pipefail for better error handling
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
