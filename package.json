@@ -45,13 +45,13 @@
     "ora": "^8.2.0",
     "update-notifier": "^7.3.1"
   },
-  "packageManager": "bun@1.2.17",
+  "packageManager": "bun@1.2.19",
   "engines": {
-    "bun": "~1.2.17"
+    "bun": "~1.2.19"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.0.6",
-    "@types/bun": "^1.2.17",
+    "@biomejs/biome": "^2.1.2",
+    "@types/bun": "^1.2.19",
     "typescript": "^5.8.3"
   },
   "trustedDependencies": [
