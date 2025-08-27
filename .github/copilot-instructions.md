@@ -16,7 +16,7 @@ A TypeScript CLI metapackage that displays Dave Williams' profile with animated 
 
 ### Key Architecture Patterns
 
-```
+```plaintext
 src/
 ├── cmd.ts          # CLI entry point wrapper (shebang, error handling)
 ├── index.ts        # Core business logic (animations, table rendering)
