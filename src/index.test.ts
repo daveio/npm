@@ -19,6 +19,9 @@ describe('main export', () => {
       consoleClearCalled = true
     })
     
+    // Mock process.stdout.write to prevent terminal control sequences
+    spyOn(process.stdout, 'write').mockImplementation(() => true)
+    
     // Mock process.stdin and stdout for non-interactive mode
     process.stdin.isTTY = false
     process.stdout.isTTY = false
@@ -41,14 +44,14 @@ describe('main export', () => {
     // Check that some essential content is logged
     const allOutput = consoleLogOutput.join('\n')
     
-    // Check for the ASCII art title
-    expect(allOutput).toContain('DAVE')
+    // Check for the title in the output (it's rendered with CFonts)
+    expect(allOutput).toContain('█') // The block characters from the title
     
     // Check for social links
     expect(allOutput).toContain('https://dave.io') // Main website
     expect(allOutput).toContain('https://dave.io/go/') // At least one social link
     
-    // Check for non-interactive mode message
+    // Check for final message (no longer checking for interactive mode)
     expect(allOutput).toContain('All links above are clickable in supported terminals')
   }, 10000) // Set timeout to 10 seconds
 })

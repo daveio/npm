@@ -5,9 +5,9 @@ import chalk from 'chalk'
 import chalkAnimation from 'chalk-animation'
 // @ts-expect-error: No types for 'cli-spinners'
 import cliSpinners from 'cli-spinners'
+import Table from 'cli-table3'
 import figlet from 'figlet'
 import { atlas, cristal, morning, pastel, teen, vice } from 'gradient-string'
-import inquirer from 'inquirer'
 import { get as getEmoji } from 'node-emoji'
 import ora from 'ora'
 import sparkly from 'sparkly'
@@ -216,25 +216,27 @@ async function main(): Promise<void> {
 
   // Generate sparkly data points
   const data = [50, 100, 75, 88, 92, 70, 65, 80, 90, 100]
-  console.log(chalk.cyan('Activity Matrix: ') + sparkly(data))
+  console.log(`${chalk.cyan('Activity Matrix: ')}${sparkly(data)}`)
   console.log()
 
   // Glitch effect for name reveal
   const nameArt = await generateAsciiArt('DAVE')
   console.log(atlas.multiline(nameArt))
 
-  // Animated box with profile info
+  // Animated box with profile info - using boxen with proper alignment
   const profileBox = boxen(
-    `${getEmoji('rocket')} ${pastel('Weapons-grade DevOps Engineer')} ${getEmoji('rocket')}\n` +
-      `${getEmoji('computer')} ${vice('Full-stack Developer')} ${getEmoji('computer')}\n` +
-      `${getEmoji('wrench')} ${cristal('Infrastructure Architect')} ${getEmoji('wrench')}\n` +
-      `${getEmoji('sparkles')} ${morning('Creative Technologist')} ${getEmoji('sparkles')}`,
+    [
+      `${getEmoji('rocket')} ${pastel('Weapons-grade DevOps Engineer')} ${getEmoji('rocket')}`,
+      `${getEmoji('computer')} ${vice('Full-stack Developer')} ${getEmoji('computer')}`,
+      `${getEmoji('wrench')} ${cristal('Infrastructure Architect')} ${getEmoji('wrench')}`,
+      `${getEmoji('sparkles')} ${morning('Creative Technologist')} ${getEmoji('sparkles')}`
+    ].join('\n'),
     {
       padding: 1,
       margin: 1,
       borderStyle: 'double',
       borderColor: 'cyan',
-      float: 'center'
+      textAlignment: 'center'
     }
   )
 
@@ -349,101 +351,110 @@ async function main(): Promise<void> {
     }
   ]
 
-  // Animated social links with hover effect simulation
-  for (const link of links) {
-    const animation = chalkAnimation.pulse(`  ${link.icon} ${link.name}`)
-    await sleep(150)
-    animation.stop()
-    console.log(`  ${link.color(link.icon)} ${link.link(link.url)}`)
+  // Create a table for social links - 3 columns layout
+  const socialTable = new Table({
+    chars: {
+      top: '═',
+      'top-mid': '╤',
+      'top-left': '╔',
+      'top-right': '╗',
+      bottom: '═',
+      'bottom-mid': '╧',
+      'bottom-left': '╚',
+      'bottom-right': '╝',
+      left: '║',
+      'left-mid': '╟',
+      mid: '─',
+      'mid-mid': '┼',
+      right: '║',
+      'right-mid': '╢',
+      middle: '│'
+    },
+    style: {
+      'padding-left': 1,
+      'padding-right': 1,
+      head: ['cyan'],
+      border: ['cyan']
+    },
+    colWidths: [25, 25, 25]
+  })
+
+  // Group links into rows of 3
+  for (let i = 0; i < links.length; i += 3) {
+    const row: string[] = []
+    for (let j = 0; j < 3 && i + j < links.length; j++) {
+      const link = links[i + j]
+      const content = `${link.color(link.icon)} ${link.color(link.name)}`
+      row.push(content)
+    }
+    // Fill empty cells if needed
+    while (row.length < 3) {
+      row.push('')
+    }
+    socialTable.push(row)
+    
+    // Add URLs row
+    const urlRow: string[] = []
+    for (let j = 0; j < 3 && i + j < links.length; j++) {
+      const link = links[i + j]
+      urlRow.push(link.link(link.url))
+    }
+    while (urlRow.length < 3) {
+      urlRow.push('')
+    }
+    socialTable.push(urlRow)
+    
+    // Add a separator row if not the last group
+    if (i + 3 < links.length) {
+      socialTable.push(['', '', ''])
+    }
   }
 
+  console.log(socialTable.toString())
   console.log()
 
-  // Interactive menu section
-  const menuBox = boxen(
-    `${getEmoji('earth_americas')} ${terminalLink(chalk.underline(chalk.greenBright('Website')), 'https://dave.io')} → https://dave.io\n` +
-      `${getEmoji('rainbow')} ${terminalLink(chalk.underline(chalk.blueBright('Pronouns')), 'https://dave.io/gender')} → they/them\n` +
-      `${getEmoji('briefcase')} ${terminalLink(chalk.underline(chalk.yellowBright('CV/Resume')), 'https://dave.io/go/cv')} → View my experience\n` +
-      `${getEmoji('puzzle_piece')} ${terminalLink(chalk.underline(chalk.magentaBright('Give me a TODO')), 'https://dave.io/go/todo')} → Random task generator\n` +
-      `${getEmoji('microphone')} ${terminalLink(chalk.underline(chalk.cyanBright('Watch a talk')), 'https://dave.io/go/wat')} → WAT: A Tale of JavaScript\n` +
-      `${getEmoji('parrot')} ${terminalLink(chalk.underline(chalk.redBright('Read a story')), 'https://dave.io/go/blit')} → The Blit Chronicles`,
+  // Quick links section with proper boxen alignment
+  const quickLinksBox = boxen(
+    [
+      `${getEmoji('earth_americas')} ${terminalLink(chalk.underline(chalk.greenBright('Website')), 'https://dave.io')}`,
+      `   → https://dave.io`,
+      '',
+      `${getEmoji('rainbow')} ${terminalLink(chalk.underline(chalk.blueBright('Pronouns')), 'https://dave.io/gender')}`,
+      `   → they/them`,
+      '',
+      `${getEmoji('briefcase')} ${terminalLink(chalk.underline(chalk.yellowBright('CV/Resume')), 'https://dave.io/go/cv')}`,
+      `   → View my experience`,
+      '',
+      `${getEmoji('jigsaw') || '🧩'} ${terminalLink(chalk.underline(chalk.magentaBright('Give me a TODO')), 'https://dave.io/go/todo')}`,
+      `   → Random task generator`,
+      '',
+      `${getEmoji('microphone')} ${terminalLink(chalk.underline(chalk.cyanBright('Watch a talk')), 'https://dave.io/go/wat')}`,
+      `   → WAT: A Tale of JavaScript`,
+      '',
+      `${getEmoji('parrot')} ${terminalLink(chalk.underline(chalk.redBright('Read a story')), 'https://dave.io/go/blit')}`,
+      `   → The Blit Chronicles`
+    ].join('\n'),
     {
       padding: 1,
       borderStyle: 'round',
       borderColor: 'magenta',
-      float: 'center',
       title: teen('Quick Links'),
-      titleAlignment: 'center'
+      titleAlignment: 'center',
+      textAlignment: 'left'
     }
   )
 
-  console.log(menuBox)
-
-  // Check if running in non-interactive mode (CI, piped, etc.)
-  const isInteractive = process.stdin.isTTY && process.stdout.isTTY
-
-  if (isInteractive) {
-    // Interactive prompt for engagement
-    console.log()
-    const { action } = await inquirer.prompt([
-      {
-        type: 'list',
-        name: 'action',
-        message: morning('What would you like to explore?'),
-        choices: [
-          { name: `${getEmoji('wave')} Just browsing - thanks!`, value: 'browse' },
-          { name: `${getEmoji('rocket')} Show me something cool`, value: 'cool' },
-          { name: `${getEmoji('sparkles')} Run the intro again`, value: 'restart' },
-          { name: `${getEmoji('door')} Exit`, value: 'exit' }
-        ]
-      }
-    ])
-
-    switch (action) {
-      case 'cool':
-        console.log()
-        console.log(
-          cfonts.render('YOU ARE\nAWESOME!', {
-            font: 'chrome',
-            align: 'center',
-            colors: ['cyan', 'magenta', 'yellow'],
-            background: 'transparent',
-            letterSpacing: 1,
-            lineHeight: 1,
-            space: true,
-            gradient: true,
-            independentGradient: true,
-            transitionGradient: true
-          }).string
-        )
-        break
-      case 'restart':
-        console.clear()
-        // Restart the whole experience
-        await main()
-        break
-      case 'browse':
-        console.log()
-        console.log(pastel('✨ Enjoy exploring! All links above are clickable in supported terminals. ✨'))
-        break
-      case 'exit': {
-        console.log()
-        const goodbye = await generateAsciiArt('BYE!')
-        console.log(vice.multiline(goodbye))
-        break
-      }
-    }
-  } else {
-    // Non-interactive mode - just show a nice message
-    console.log()
-    console.log(pastel('✨ All links above are clickable in supported terminals ✨'))
-  }
+  console.log(quickLinksBox)
 
   // Final sparkle animation
   console.log()
   const finalAnimation = chalkAnimation.rainbow('═══════════════════════════════════════════')
   await sleep(1000)
   finalAnimation.stop()
+  
+  // Final message
+  console.log()
+  console.log(pastel('✨ All links above are clickable in supported terminals ✨'))
   console.log()
 }
 
