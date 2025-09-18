@@ -226,10 +226,10 @@ async function main(): Promise<void> {
   // Animated box with profile info - using boxen with proper alignment
   const profileBox = boxen(
     [
-      `${getEmoji('rocket')} ${pastel('Weapons-grade DevOps Engineer')} ${getEmoji('rocket')}`,
-      `${getEmoji('computer')} ${vice('Full-stack Developer')} ${getEmoji('computer')}`,
-      `${getEmoji('wrench')} ${cristal('Infrastructure Architect')} ${getEmoji('wrench')}`,
-      `${getEmoji('sparkles')} ${morning('Creative Technologist')} ${getEmoji('sparkles')}`
+      `${getEmoji('rocket')}  ${pastel('Weapons-grade DevOps Engineer')}  ${getEmoji('rocket')}`,
+      `${getEmoji('computer')}  ${vice('Full-stack Developer')}  ${getEmoji('computer')}`,
+      `${getEmoji('wrench')}  ${cristal('Infrastructure Architect')}  ${getEmoji('wrench')}`,
+      `${getEmoji('sparkles')}  ${morning('Creative Technologist')}  ${getEmoji('sparkles')}`
     ].join('\n'),
     {
       padding: 1,
@@ -351,62 +351,64 @@ async function main(): Promise<void> {
     }
   ]
 
-  // Create a table for social links - 3 columns layout
+  // Create a table for social links - 2 columns layout, invisible borders
   const socialTable = new Table({
     chars: {
-      top: '═',
-      'top-mid': '╤',
-      'top-left': '╔',
-      'top-right': '╗',
-      bottom: '═',
-      'bottom-mid': '╧',
-      'bottom-left': '╚',
-      'bottom-right': '╝',
-      left: '║',
-      'left-mid': '╟',
-      mid: '─',
-      'mid-mid': '┼',
-      right: '║',
-      'right-mid': '╢',
-      middle: '│'
+      top: '',
+      'top-mid': '',
+      'top-left': '',
+      'top-right': '',
+      bottom: '',
+      'bottom-mid': '',
+      'bottom-left': '',
+      'bottom-right': '',
+      left: '',
+      'left-mid': '',
+      mid: '',
+      'mid-mid': '',
+      right: '',
+      'right-mid': '',
+      middle: '  ' // Two spaces for column separator
     },
     style: {
-      'padding-left': 1,
-      'padding-right': 1,
+      'padding-left': 2, // Increased padding
+      'padding-right': 2,
       head: ['cyan'],
-      border: ['cyan']
+      border: [] // No border styling
     },
-    colWidths: [25, 25, 25]
+    colWidths: [45, 45] // Wider columns for full URLs
   })
 
-  // Group links into rows of 3
-  for (let i = 0; i < links.length; i += 3) {
+  // Group links into rows of 2
+  for (let i = 0; i < links.length; i += 2) {
     const row: string[] = []
-    for (let j = 0; j < 3 && i + j < links.length; j++) {
+    for (let j = 0; j < 2 && i + j < links.length; j++) {
       const link = links[i + j]
-      const content = `${link.color(link.icon)} ${link.color(link.name)}`
+      // Add extra spaces between emoji and text for better alignment
+      const content = `${link.color(link.icon)}  ${link.color(link.name)}`
       row.push(content)
     }
     // Fill empty cells if needed
-    while (row.length < 3) {
+    while (row.length < 2) {
       row.push('')
     }
     socialTable.push(row)
-    
+
     // Add URLs row
     const urlRow: string[] = []
-    for (let j = 0; j < 3 && i + j < links.length; j++) {
+    for (let j = 0; j < 2 && i + j < links.length; j++) {
       const link = links[i + j]
-      urlRow.push(link.link(link.url))
+      // Add indentation for URLs to align with text above
+      urlRow.push(`    ${link.link(link.url)}`)
     }
-    while (urlRow.length < 3) {
+    while (urlRow.length < 2) {
       urlRow.push('')
     }
     socialTable.push(urlRow)
-    
+
     // Add a separator row if not the last group
-    if (i + 3 < links.length) {
-      socialTable.push(['', '', ''])
+    if (i + 2 < links.length) {
+      socialTable.push(['', ''])
     }
   }
 
@@ -416,23 +418,23 @@ async function main(): Promise<void> {
   // Quick links section with proper boxen alignment
   const quickLinksBox = boxen(
     [
-      `${getEmoji('earth_americas')} ${terminalLink(chalk.underline(chalk.greenBright('Website')), 'https://dave.io')}`,
-      `   → https://dave.io`,
+      `${getEmoji('earth_americas')}  ${terminalLink(chalk.underline(chalk.greenBright('Website')), 'https://dave.io')}`,
+      '   → https://dave.io',
       '',
-      `${getEmoji('rainbow')} ${terminalLink(chalk.underline(chalk.blueBright('Pronouns')), 'https://dave.io/gender')}`,
-      `   → they/them`,
+      `${getEmoji('rainbow')}  ${terminalLink(chalk.underline(chalk.blueBright('Pronouns')), 'https://dave.io/gender')}`,
+      '   → they/them',
       '',
-      `${getEmoji('briefcase')} ${terminalLink(chalk.underline(chalk.yellowBright('CV/Resume')), 'https://dave.io/go/cv')}`,
-      `   → View my experience`,
+      `${getEmoji('briefcase')}  ${terminalLink(chalk.underline(chalk.yellowBright('CV/Resume')), 'https://dave.io/go/cv')}`,
+      '   → View my experience',
       '',
-      `${getEmoji('jigsaw') || '🧩'} ${terminalLink(chalk.underline(chalk.magentaBright('Give me a TODO')), 'https://dave.io/go/todo')}`,
-      `   → Random task generator`,
+      `${getEmoji('jigsaw') || '🧩'}  ${terminalLink(chalk.underline(chalk.magentaBright('Give me a TODO')), 'https://dave.io/go/todo')}`,
+      '   → Random task generator',
       '',
-      `${getEmoji('microphone')} ${terminalLink(chalk.underline(chalk.cyanBright('Watch a talk')), 'https://dave.io/go/wat')}`,
-      `   → WAT: A Tale of JavaScript`,
+      `${getEmoji('microphone')}  ${terminalLink(chalk.underline(chalk.cyanBright('Watch a talk')), 'https://dave.io/go/wat')}`,
+      '   → WAT: A Tale of JavaScript',
       '',
-      `${getEmoji('parrot')} ${terminalLink(chalk.underline(chalk.redBright('Read a story')), 'https://dave.io/go/blit')}`,
-      `   → The Blit Chronicles`
+      `${getEmoji('parrot')}  ${terminalLink(chalk.underline(chalk.redBright('Read a story')), 'https://dave.io/go/blit')}`,
+      '   → The Blit Chronicles'
     ].join('\n'),
     {
       padding: 1,
@@ -451,7 +453,7 @@ async function main(): Promise<void> {
   const finalAnimation = chalkAnimation.rainbow('═══════════════════════════════════════════')
   await sleep(1000)
   finalAnimation.stop()
-  
+
   // Final message
   console.log()
   console.log(pastel('✨ All links above are clickable in supported terminals ✨'))
