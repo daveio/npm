@@ -75,3 +75,4 @@ Performance is optimized through:
 5. Separator lines with gradient animations
 
 All animations degrade gracefully in non-TTY environments or when disabled via environment variables.
+
