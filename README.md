@@ -64,6 +64,25 @@ const dave = await import("dave.io");
 dave();
 ```
 
+## Environment Variables
+
+You can control the display behavior using these environment variables:
+
+- `NO_ANIMATIONS=true` - Skip all animations for faster output
+- `NO_COLOR=true` - Disable colored output for accessibility or simpler terminals
+
+Examples:
+```bash
+# Skip animations
+NO_ANIMATIONS=true npx dave.io
+
+# Disable colors
+NO_COLOR=true npx dave.io
+
+# Both together for minimal output
+NO_ANIMATIONS=true NO_COLOR=true npx dave.io
+```
+
 ## Development
 
 - Written in **TypeScript**, because more code is more better.
