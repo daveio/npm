@@ -223,29 +223,27 @@ async function main(): Promise<void> {
   const nameArt = await generateAsciiArt('DAVE')
   console.log(atlas.multiline(nameArt))
 
-  // Animated box with profile info - using boxen with proper alignment
-  const profileBox = boxen(
-    [
-      `${getEmoji('rocket')}  ${pastel('Weapons-grade DevOps Engineer')}  ${getEmoji('rocket')}`,
-      `${getEmoji('computer')}  ${vice('Full-stack Developer')}  ${getEmoji('computer')}`,
-      `${getEmoji('wrench')}  ${cristal('Infrastructure Architect')}  ${getEmoji('wrench')}`,
-      `${getEmoji('sparkles')}  ${morning('Creative Technologist')}  ${getEmoji('sparkles')}`
-    ].join('\n'),
-    {
-      padding: 1,
-      margin: 1,
-      borderStyle: 'double',
-      borderColor: 'cyan',
-      textAlignment: 'center'
-    }
-  )
+  // Profile section - clean centered display without borders
+  console.log()
+  console.log(chalk.cyan('─'.repeat(90)))
+  console.log()
 
-  // Typewriter effect for the box
-  const boxLines = profileBox.split('\n')
-  for (const line of boxLines) {
-    await typeWriter(line, 5)
-    console.log()
+  const profileLines = [
+    `${getEmoji('rocket')}  ${pastel('Weapons-grade DevOps Engineer')}  ${getEmoji('rocket')}`,
+    `${getEmoji('computer')}  ${vice('Full-stack Developer')}  ${getEmoji('computer')}`,
+    `${getEmoji('wrench')}  ${cristal('Infrastructure Architect')}  ${getEmoji('wrench')}`,
+    `${getEmoji('sparkles')}  ${morning('Creative Technologist')}  ${getEmoji('sparkles')}`
+  ]
+
+  // Display each line centered
+  for (const line of profileLines) {
+    const padding = ' '.repeat(20)
+    console.log(padding + line)
   }
+
+  console.log()
+  console.log(chalk.cyan('─'.repeat(90)))
+  console.log()
 
   // Glitch transition
   await glitchEffect('>>> LOADING SOCIAL MATRIX <<<', 15)
@@ -415,42 +413,110 @@ async function main(): Promise<void> {
   console.log(socialTable.toString())
   console.log()
 
-  // Quick links section with proper boxen alignment
-  const quickLinksBox = boxen(
-    [
-      `${getEmoji('earth_americas')}  ${terminalLink(chalk.underline(chalk.greenBright('Website')), 'https://dave.io')}`,
-      '   → https://dave.io',
-      '',
-      `${getEmoji('rainbow')}  ${terminalLink(chalk.underline(chalk.blueBright('Pronouns')), 'https://dave.io/gender')}`,
-      '   → they/them',
-      '',
-      `${getEmoji('briefcase')}  ${terminalLink(chalk.underline(chalk.yellowBright('CV/Resume')), 'https://dave.io/go/cv')}`,
-      '   → View my experience',
-      '',
-      `${getEmoji('jigsaw') || '🧩'}  ${terminalLink(chalk.underline(chalk.magentaBright('Give me a TODO')), 'https://dave.io/go/todo')}`,
-      '   → Random task generator',
-      '',
-      `${getEmoji('microphone')}  ${terminalLink(chalk.underline(chalk.cyanBright('Watch a talk')), 'https://dave.io/go/wat')}`,
-      '   → WAT: A Tale of JavaScript',
-      '',
-      `${getEmoji('parrot')}  ${terminalLink(chalk.underline(chalk.redBright('Read a story')), 'https://dave.io/go/blit')}`,
-      '   → The Blit Chronicles'
-    ].join('\n'),
-    {
-      padding: 1,
-      borderStyle: 'round',
-      borderColor: 'magenta',
-      title: teen('Quick Links'),
-      titleAlignment: 'center',
-      textAlignment: 'left'
-    }
-  )
+  // Separator before Quick Links
+  console.log(chalk.magenta('─'.repeat(90)))
+  console.log()
+  console.log(chalk.magenta.bold('                                Quick Links                                '))
+  console.log()
 
-  console.log(quickLinksBox)
+  // Quick links section as two-column table like social links
+  const quickLinksTable = new Table({
+    chars: {
+      top: '',
+      'top-mid': '',
+      'top-left': '',
+      'top-right': '',
+      bottom: '',
+      'bottom-mid': '',
+      'bottom-left': '',
+      'bottom-right': '',
+      left: '',
+      'left-mid': '',
+      mid: '',
+      'mid-mid': '',
+      right: '',
+      'right-mid': '',
+      middle: '  ' // Two spaces for column separator
+    },
+    style: {
+      'padding-left': 2, // Increased padding
+      'padding-right': 2,
+      head: ['magenta'],
+      border: [] // No border styling
+    },
+    colWidths: [45, 45] // Wider columns for full URLs
+  })
+
+  // Quick links data
+  const quickLinks = [
+    {
+      icon: getEmoji('earth_americas'),
+      name: terminalLink(chalk.underline(chalk.greenBright('Website')), 'https://dave.io'),
+      detail: 'https://dave.io'
+    },
+    {
+      icon: getEmoji('rainbow'),
+      name: terminalLink(chalk.underline(chalk.blueBright('Pronouns')), 'https://dave.io/gender'),
+      detail: 'they/them'
+    },
+    {
+      icon: getEmoji('briefcase'),
+      name: terminalLink(chalk.underline(chalk.yellowBright('CV/Resume')), 'https://dave.io/go/cv'),
+      detail: 'View my experience'
+    },
+    {
+      icon: getEmoji('jigsaw') || '🧩',
+      name: terminalLink(chalk.underline(chalk.magentaBright('Give me a TODO')), 'https://dave.io/go/todo'),
+      detail: 'Random task generator'
+    },
+    {
+      icon: getEmoji('microphone'),
+      name: terminalLink(chalk.underline(chalk.cyanBright('Watch a talk')), 'https://dave.io/go/wat'),
+      detail: 'WAT: A Tale of JavaScript'
+    },
+    {
+      icon: getEmoji('parrot'),
+      name: terminalLink(chalk.underline(chalk.redBright('Read a story')), 'https://dave.io/go/blit'),
+      detail: 'The Blit Chronicles'
+    }
+  ]
+
+  // Group links into rows of 2
+  for (let i = 0; i < quickLinks.length; i += 2) {
+    const row: string[] = []
+    for (let j = 0; j < 2 && i + j < quickLinks.length; j++) {
+      const link = quickLinks[i + j]
+      const content = `${link.icon}  ${link.name}`
+      row.push(content)
+    }
+    // Fill empty cells if needed
+    while (row.length < 2) {
+      row.push('')
+    }
+    quickLinksTable.push(row)
+
+    // Add detail row
+    const detailRow: string[] = []
+    for (let j = 0; j < 2 && i + j < quickLinks.length; j++) {
+      const link = quickLinks[i + j]
+      detailRow.push(`    → ${link.detail}`)
+    }
+    while (detailRow.length < 2) {
+      detailRow.push('')
+    }
+    quickLinksTable.push(detailRow)
+
+    // Add a separator row if not the last group
+    if (i + 2 < quickLinks.length) {
+      quickLinksTable.push(['', ''])
+    }
+  }
+
+  console.log(quickLinksTable.toString())
 
   // Final sparkle animation
   console.log()
-  const finalAnimation = chalkAnimation.rainbow('═══════════════════════════════════════════')
+  const finalAnimation = chalkAnimation.rainbow('═'.repeat(90))
   await sleep(1000)
   finalAnimation.stop()
 
