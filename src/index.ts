@@ -1,5 +1,4 @@
 import ansiEscapes from 'ansi-escapes'
-import boxen from 'boxen'
 import cfonts from 'cfonts'
 import chalk from 'chalk'
 import chalkAnimation from 'chalk-animation'
@@ -11,8 +10,6 @@ import { atlas, cristal, morning, pastel, teen, vice } from 'gradient-string'
 import { get as getEmoji } from 'node-emoji'
 import ora from 'ora'
 import sparkly from 'sparkly'
-// @ts-expect-error: No types for 'terminal-kit'
-import terminalKit from 'terminal-kit'
 // @ts-expect-error: No types for 'update-notifier'
 import updateNotifier from 'update-notifier'
 import pkg from '../package.json' with { type: 'json' }
@@ -22,9 +19,6 @@ const notifier = updateNotifier({ pkg })
 if (notifier.update) {
   notifier.notify()
 }
-
-// Initialize terminal-kit
-const _term = terminalKit.terminal
 
 // Define timeout as a utility function for better readability
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms))
@@ -136,14 +130,6 @@ async function generateAsciiArt(text: string): Promise<string> {
       }
     )
   })
-}
-
-// Typewriter effect
-async function typeWriter(text: string, delay = 30): Promise<void> {
-  for (const char of text) {
-    process.stdout.write(char)
-    await sleep(delay)
-  }
 }
 
 // Glitch effect
