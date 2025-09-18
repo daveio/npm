@@ -19,6 +19,12 @@ const supportsAnsi = process.stdout.isTTY && !NO_COLOR
 const termWidth = process.stdout.columns || 80
 const termHeight = process.stdout.rows || 24
 
+// Animation constants
+const MAX_TERMINAL_WIDTH = 200
+const MAX_TERMINAL_HEIGHT = 50
+const MATRIX_RAIN_FPS = 20
+const ANIMATION_FRAME_DELAY = 1000 / MATRIX_RAIN_FPS
+
 // Check for updates at startup
 const notifier = updateNotifier({ pkg })
 if (notifier.update) {
@@ -62,26 +68,26 @@ async function matrixRain(duration = 3000): Promise<void> {
     return
   }
 
-  const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
-  const width = Math.min(termWidth, 200) // Cap width for performance
-  const height = Math.min(termHeight, 50) // Cap height for performance
-  const drops: number[] = []
+  return new Promise<void>((resolve) => {
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
+    const width = Math.min(termWidth, MAX_TERMINAL_WIDTH)
+    const height = Math.min(termHeight, MAX_TERMINAL_HEIGHT)
+    const drops: number[] = []
 
-  for (let x = 0; x < width; x++) {
-    drops[x] = Math.floor(Math.random() * -height)
-  }
+    for (let x = 0; x < width; x++) {
+      drops[x] = Math.floor(Math.random() * -height)
+    }
 
-  process.stdout.write(ansiEscapes.cursorHide)
-  process.stdout.write(ansiEscapes.clearScreen)
+    process.stdout.write(ansiEscapes.cursorHide)
+    process.stdout.write(ansiEscapes.clearScreen)
 
-  const startTime = Date.now()
-  let interval: NodeJS.Timeout | null = null
-  try {
-    interval = setInterval(() => {
+    const startTime = Date.now()
+    const interval = setInterval(() => {
       if (Date.now() - startTime > duration) {
-        if (interval) clearInterval(interval)
+        clearInterval(interval)
         process.stdout.write(ansiEscapes.clearScreen)
         process.stdout.write(ansiEscapes.cursorShow)
+        resolve()
         return
       }
 
@@ -108,12 +114,8 @@ async function matrixRain(duration = 3000): Promise<void> {
         }
         drops[x]++
       }
-    }, 50)
-  } catch (_err) {
-    // Fallback for environments that don't support animations
-    if (interval) clearInterval(interval)
-    process.stdout.write(ansiEscapes.cursorShow)
-  }
+    }, ANIMATION_FRAME_DELAY)
+  })
 }
 
 // Particle effect function
@@ -124,17 +126,17 @@ async function particleEffect(text: string, duration = 2000): Promise<void> {
     return
   }
 
-  const frames = ['∙∙∙∙∙', '●∙∙∙∙', '∙●∙∙∙', '∙∙●∙∙', '∙∙∙●∙', '∙∙∙∙●', '∙∙∙∙∙']
+  return new Promise<void>((resolve) => {
+    const frames = ['∙∙∙∙∙', '●∙∙∙∙', '∙●∙∙∙', '∙∙●∙∙', '∙∙∙●∙', '∙∙∙∙●', '∙∙∙∙∙']
+    const startTime = Date.now()
+    let frameIndex = 0
 
-  const startTime = Date.now()
-  let frameIndex = 0
-
-  let interval: NodeJS.Timeout | null = null
-  try {
-    interval = setInterval(() => {
+    const interval = setInterval(() => {
       if (Date.now() - startTime > duration) {
-        if (interval) clearInterval(interval)
+        clearInterval(interval)
         process.stdout.write(`\r${' '.repeat(50)}\r`)
+        console.log(vice(text))
+        resolve()
         return
       }
 
@@ -142,14 +144,7 @@ async function particleEffect(text: string, duration = 2000): Promise<void> {
       process.stdout.write(`\r${particles} ${vice(text)} ${particles}`)
       frameIndex++
     }, 100)
-
-    await sleep(duration)
-  } catch (_err) {
-    // Fallback: just display the text
-    console.log(text)
-  } finally {
-    if (interval) clearInterval(interval)
-  }
+  })
 }
 
 // ASCII art generator
@@ -210,16 +205,8 @@ async function glitchEffect(text: string, iterations = 10): Promise<void> {
   }
 }
 
-async function main(): Promise<void> {
-  // Clear screen for fresh start (only if in TTY)
-  if (supportsAnsi) {
-    console.clear()
-  }
-
-  // Matrix rain intro (respects SKIP_ANIMATIONS)
-  await matrixRain(2000)
-
-  // Epic ASCII art title with CFonts
+// Display the title with CFonts
+async function displayTitle(): Promise<void> {
   const titleRender = cfonts.render('DAVE.IO', {
     font: 'block',
     align: 'center',
@@ -239,12 +226,15 @@ async function main(): Promise<void> {
   } else {
     console.log(chalk.cyan('DAVE.IO'))
   }
+}
 
-  // Animated particles around version
-  await particleEffect(`v${pkg.version}`, 1500)
-  console.log()
+// Run loading spinners sequence
+async function runLoadingSequence(): Promise<void> {
+  if (SKIP_ANIMATIONS || !supportsAnsi) {
+    console.log('Loading profile...')
+    return
+  }
 
-  // Create animated loading sequence with multiple spinners
   const spinners = [
     { text: 'Initializing quantum flux capacitor', spinner: cliSpinners.dots12 },
     { text: 'Calibrating neural pathways', spinner: cliSpinners.bouncingBall },
@@ -253,14 +243,168 @@ async function main(): Promise<void> {
     { text: 'Loading awesome', spinner: cliSpinners.aesthetic }
   ]
 
-  for (const config of spinners) {
-    const spinner = ora({
-      text: teen(config.text),
-      spinner: config.spinner
-    }).start()
-    await sleep(400)
-    spinner.succeed(morning(`${config.text} ✓`))
+  for (const { text, spinner } of spinners) {
+    const oraSpinner = ora({ text, spinner }).start()
+    await sleep(500)
+    oraSpinner.succeed()
   }
+}
+
+// Display the profile section
+function displayProfile(): void {
+  console.log()
+  console.log(chalk.cyan('─'.repeat(90)))
+  console.log()
+
+  const profileLines = [
+    getEmoji('rocket') + '  Dave Williams',
+    getEmoji('wrench') + '  Weapons-grade DevOps Engineer',
+    getEmoji('house') + '  Berlin, Germany',
+    getEmoji('cake') + `  Coding for ${Math.floor((Date.now() - new Date('2007-01-01').getTime()) / (365.25 * 24 * 60 * 60 * 1000))} years`,
+    getEmoji('heart') + '  TypeScript, Rust, Go, Infrastructure as Code',
+    getEmoji('briefcase') + '  Building the future of developer tools'
+  ]
+
+  for (const line of profileLines) {
+    const padding = ' '.repeat(20)
+    console.log(padding + line)
+  }
+
+  console.log()
+  console.log(chalk.cyan('─'.repeat(90)))
+  console.log()
+}
+
+// Create a standardized table
+function createStyledTable(options = {}): Table.Table {
+  return new Table({
+    chars: {
+      top: '',
+      'top-mid': '',
+      'top-left': '',
+      'top-right': '',
+      bottom: '',
+      'bottom-mid': '',
+      'bottom-left': '',
+      'bottom-right': '',
+      left: '',
+      'left-mid': '',
+      mid: '─',
+      'mid-mid': '┼',
+      right: '',
+      'right-mid': '',
+      middle: ' │ '
+    },
+    style: { 
+      'padding-left': 2, 
+      'padding-right': 2, 
+      border: [],
+      ...options
+    },
+    colWidths: [40, 40]
+  })
+}
+
+// Display quick links section
+function displayQuickLinks(): void {
+  console.log()
+  console.log(chalk.magenta('─'.repeat(90)))
+  console.log(chalk.bold(chalk.magenta('   🔗 Quick Links')))
+  console.log(chalk.magenta('─'.repeat(90)))
+  console.log()
+
+  const quickLinksTable = createStyledTable()
+  
+  const socialLinks: SocialLink[] = [
+    {
+      icon: getEmoji('bird'),
+      name: 'Twitter/X',
+      url: 'https://x.com/0x434b',
+      color: chalk.blueBright,
+      link: (text: string) => chalk.blueBright(terminalLink(text, 'https://x.com/0x434b'))
+    },
+    {
+      icon: getEmoji('computer'),
+      name: 'GitHub',
+      url: 'https://github.com/daveio',
+      color: chalk.white,
+      link: (text: string) => terminalLink(text, 'https://github.com/daveio')
+    },
+    {
+      icon: getEmoji('briefcase'),
+      name: 'LinkedIn',
+      url: 'https://linkedin.com/in/0x434b',
+      color: chalk.blue,
+      link: (text: string) => chalk.blue(terminalLink(text, 'https://linkedin.com/in/0x434b'))
+    },
+    {
+      icon: getEmoji('globe_with_meridians'),
+      name: 'Website',
+      url: 'https://dave.io',
+      color: chalk.yellowBright,
+      link: (text: string) => chalk.yellowBright(terminalLink(text, 'https://dave.io'))
+    },
+    {
+      icon: getEmoji('email'),
+      name: 'Email',
+      url: 'mailto:npm@dave.io',
+      color: chalk.magentaBright,
+      link: (text: string) => chalk.magentaBright(terminalLink(text, 'mailto:npm@dave.io'))
+    },
+    {
+      icon: getEmoji('package'),
+      name: 'npm',
+      url: 'https://npmjs.com/~daveio',
+      color: chalk.red,
+      link: (text: string) => chalk.red(terminalLink(text, 'https://npmjs.com/~daveio'))
+    },
+    {
+      icon: getEmoji('rocket'),
+      name: 'Bsky',
+      url: 'https://bsky.app/profile/dave.io',
+      color: chalk.cyanBright,
+      link: (text: string) => chalk.cyanBright(terminalLink(text, 'https://bsky.app/profile/dave.io'))
+    },
+    {
+      icon: getEmoji('robot'),
+      name: 'Mastodon',
+      url: 'https://hachyderm.io/@0x434b',
+      color: chalk.magenta,
+      link: (text: string) => chalk.magenta(terminalLink(text, 'https://hachyderm.io/@0x434b'))
+    }
+  ]
+
+  for (let i = 0; i < socialLinks.length; i += 2) {
+    const link1 = socialLinks[i]
+    const link2 = socialLinks[i + 1]
+
+    const cell1 = `${link1.icon}  ${link1.link(`${link1.name}: ${link1.url}`)}`
+    const cell2 = link2 ? `${link2.icon}  ${link2.link(`${link2.name}: ${link2.url}`)}` : ''
+
+    quickLinksTable.push([cell1, cell2])
+  }
+
+  console.log(quickLinksTable.toString())
+}
+
+async function main(): Promise<void> {
+  // Clear screen for fresh start (only if in TTY)
+  if (supportsAnsi) {
+    console.clear()
+  }
+
+  // Matrix rain intro (respects SKIP_ANIMATIONS)
+  await matrixRain(2000)
+
+  // Display title
+  await displayTitle()
+
+  // Animated particles around version
+  await particleEffect(`v${pkg.version}`, 1500)
+  console.log()
+
+  // Run loading sequence
+  await runLoadingSequence()
 
   console.log()
 
@@ -273,296 +417,15 @@ async function main(): Promise<void> {
   const nameArt = await generateAsciiArt('DAVE')
   console.log(atlas.multiline(nameArt))
 
-  // Profile section - clean centered display without borders
-  console.log()
-  console.log(chalk.cyan('─'.repeat(90)))
-  console.log()
-
-  const profileLines = [
-    `${getEmoji('rocket')}  ${pastel('Weapons-grade DevOps Engineer')}  ${getEmoji('rocket')}`,
-    `${getEmoji('computer')}  ${vice('Full-stack Developer')}  ${getEmoji('computer')}`,
-    `${getEmoji('wrench')}  ${cristal('Infrastructure Architect')}  ${getEmoji('wrench')}`,
-    `${getEmoji('sparkles')}  ${morning('Creative Technologist')}  ${getEmoji('sparkles')}`
-  ]
-
-  // Display each line centered
-  for (const line of profileLines) {
-    const padding = ' '.repeat(20)
-    console.log(padding + line)
-  }
-
-  console.log()
-  console.log(chalk.cyan('─'.repeat(90)))
-  console.log()
+  // Display profile section
+  displayProfile()
 
   // Glitch transition
   await glitchEffect('>>> LOADING SOCIAL MATRIX <<<', 15)
   console.log('\n')
-
-  // Define social media links with emojis
-  const links: SocialLink[] = [
-    {
-      icon: '🦋',
-      name: 'Bluesky',
-      url: 'https://dave.io/go/bluesky',
-      color: chalk.yellow,
-      link: (text) => terminalLink(chalk.underline(chalk.yellow(text)), 'https://dave.io/go/bluesky'),
-      emoji: 'butterfly'
-    },
-    {
-      icon: '📓',
-      name: 'Dreamwidth',
-      url: 'https://dave.io/go/dreamwidth',
-      color: chalk.green,
-      link: (text) => terminalLink(chalk.underline(chalk.green(text)), 'https://dave.io/go/dreamwidth'),
-      emoji: 'notebook'
-    },
-    {
-      icon: '📘',
-      name: 'Facebook',
-      url: 'https://dave.io/go/facebook',
-      color: chalk.blue,
-      link: (text) => terminalLink(chalk.underline(chalk.blue(text)), 'https://dave.io/go/facebook'),
-      emoji: 'blue_book'
-    },
-    {
-      icon: '🐙',
-      name: 'GitHub',
-      url: 'https://dave.io/go/github',
-      color: chalk.magenta,
-      link: (text) => terminalLink(chalk.underline(chalk.magenta(text)), 'https://dave.io/go/github'),
-      emoji: 'octopus'
-    },
-    {
-      icon: '📷',
-      name: 'Instagram',
-      url: 'https://dave.io/go/instagram',
-      color: chalk.red,
-      link: (text) => terminalLink(chalk.underline(chalk.red(text)), 'https://dave.io/go/instagram'),
-      emoji: 'camera'
-    },
-    {
-      icon: '🔗',
-      name: 'LinkedIn',
-      url: 'https://dave.io/go/linkedin',
-      color: chalk.yellow,
-      link: (text) => terminalLink(chalk.underline(chalk.yellow(text)), 'https://dave.io/go/linkedin'),
-      emoji: 'link'
-    },
-    {
-      icon: '🐘',
-      name: 'Mastodon',
-      url: 'https://dave.io/go/mastodon',
-      color: chalk.green,
-      link: (text) => terminalLink(chalk.underline(chalk.green(text)), 'https://dave.io/go/mastodon'),
-      emoji: 'elephant'
-    },
-    {
-      icon: '🔮',
-      name: 'Pillowfort',
-      url: 'https://dave.io/go/pillowfort',
-      color: chalk.blue,
-      link: (text) => terminalLink(chalk.underline(chalk.blue(text)), 'https://dave.io/go/pillowfort'),
-      emoji: 'crystal_ball'
-    },
-    {
-      icon: '🧵',
-      name: 'Threads',
-      url: 'https://dave.io/go/threads',
-      color: chalk.magenta,
-      link: (text) => terminalLink(chalk.underline(chalk.magenta(text)), 'https://dave.io/go/threads'),
-      emoji: 'thread'
-    },
-    {
-      icon: '📱',
-      name: 'Tumblr',
-      url: 'https://dave.io/go/tumblr',
-      color: chalk.red,
-      link: (text) => terminalLink(chalk.underline(chalk.red(text)), 'https://dave.io/go/tumblr'),
-      emoji: 'iphone'
-    },
-    {
-      icon: '🎥',
-      name: 'YouTube',
-      url: 'https://dave.io/go/youtube',
-      color: chalk.yellow,
-      link: (text) => terminalLink(chalk.underline(chalk.yellow(text)), 'https://dave.io/go/youtube'),
-      emoji: 'movie_camera'
-    },
-    {
-      icon: '☠️',
-      name: 'Twitter',
-      url: "We don't use Twitter any more.",
-      color: chalk.dim,
-      link: (text) => chalk.dim(text),
-      emoji: 'skull'
-    }
-  ]
-
-  // Create a table for social links - 2 columns layout, invisible borders
-  const socialTable = new Table({
-    chars: {
-      top: '',
-      'top-mid': '',
-      'top-left': '',
-      'top-right': '',
-      bottom: '',
-      'bottom-mid': '',
-      'bottom-left': '',
-      'bottom-right': '',
-      left: '',
-      'left-mid': '',
-      mid: '',
-      'mid-mid': '',
-      right: '',
-      'right-mid': '',
-      middle: '  ' // Two spaces for column separator
-    },
-    style: {
-      'padding-left': 2, // Increased padding
-      'padding-right': 2,
-      head: ['cyan'],
-      border: [] // No border styling
-    },
-    colWidths: [45, 45] // Wider columns for full URLs
-  })
-
-  // Group links into rows of 2
-  for (let i = 0; i < links.length; i += 2) {
-    const row: string[] = []
-    for (let j = 0; j < 2 && i + j < links.length; j++) {
-      const link = links[i + j]
-      // Add extra spaces between emoji and text for better alignment
-      const content = `${link.color(link.icon)}  ${link.color(link.name)}`
-      row.push(content)
-    }
-    // Fill empty cells if needed
-    while (row.length < 2) {
-      row.push('')
-    }
-    socialTable.push(row)
-
-    // Add URLs row
-    const urlRow: string[] = []
-    for (let j = 0; j < 2 && i + j < links.length; j++) {
-      const link = links[i + j]
-      // Add indentation for URLs to align with text above
-      urlRow.push(`    ${link.link(link.url)}`)
-    }
-    while (urlRow.length < 2) {
-      urlRow.push('')
-    }
-    socialTable.push(urlRow)
-
-    // Add a separator row if not the last group
-    if (i + 2 < links.length) {
-      socialTable.push(['', ''])
-    }
-  }
-
-  console.log(socialTable.toString())
-  console.log()
-
-  // Separator before Quick Links
-  console.log(chalk.magenta('─'.repeat(90)))
-  console.log()
-  console.log(chalk.magenta(chalk.bold('                                Quick Links                                ')))
-  console.log()
-
-  // Quick links section as two-column table like social links
-  const quickLinksTable = new Table({
-    chars: {
-      top: '',
-      'top-mid': '',
-      'top-left': '',
-      'top-right': '',
-      bottom: '',
-      'bottom-mid': '',
-      'bottom-left': '',
-      'bottom-right': '',
-      left: '',
-      'left-mid': '',
-      mid: '',
-      'mid-mid': '',
-      right: '',
-      'right-mid': '',
-      middle: '  ' // Two spaces for column separator
-    },
-    style: {
-      'padding-left': 2, // Increased padding
-      'padding-right': 2,
-      head: ['magenta'],
-      border: [] // No border styling
-    },
-    colWidths: [45, 45] // Wider columns for full URLs
-  })
-
-  // Quick links data
-  const quickLinks = [
-    {
-      icon: getEmoji('earth_americas'),
-      name: terminalLink(chalk.underline(chalk.greenBright('Website')), 'https://dave.io'),
-      detail: 'https://dave.io'
-    },
-    {
-      icon: getEmoji('rainbow'),
-      name: terminalLink(chalk.underline(chalk.blue('Pronouns')), 'https://dave.io/gender'),
-      detail: 'they/them'
-    },
-    {
-      icon: getEmoji('briefcase'),
-      name: terminalLink(chalk.underline(chalk.yellow('CV/Resume')), 'https://dave.io/go/cv'),
-      detail: 'View my experience'
-    },
-    {
-      icon: getEmoji('jigsaw') || '🧩',
-      name: terminalLink(chalk.underline(chalk.magenta('Give me a TODO')), 'https://dave.io/go/todo'),
-      detail: 'Random task generator'
-    },
-    {
-      icon: getEmoji('microphone'),
-      name: terminalLink(chalk.underline(chalk.cyan('Watch a talk')), 'https://dave.io/go/wat'),
-      detail: 'WAT: A Tale of JavaScript'
-    },
-    {
-      icon: getEmoji('parrot'),
-      name: terminalLink(chalk.underline(chalk.red('Read a story')), 'https://dave.io/go/blit'),
-      detail: 'The Blit Chronicles'
-    }
-  ]
-
-  // Group links into rows of 2
-  for (let i = 0; i < quickLinks.length; i += 2) {
-    const row: string[] = []
-    for (let j = 0; j < 2 && i + j < quickLinks.length; j++) {
-      const link = quickLinks[i + j]
-      const content = `${link.icon}  ${link.name}`
-      row.push(content)
-    }
-    // Fill empty cells if needed
-    while (row.length < 2) {
-      row.push('')
-    }
-    quickLinksTable.push(row)
-
-    // Add detail row
-    const detailRow: string[] = []
-    for (let j = 0; j < 2 && i + j < quickLinks.length; j++) {
-      const link = quickLinks[i + j]
-      detailRow.push(`    → ${link.detail}`)
-    }
-    while (detailRow.length < 2) {
-      detailRow.push('')
-    }
-    quickLinksTable.push(detailRow)
-
-    // Add a separator row if not the last group
-    if (i + 2 < quickLinks.length) {
-      quickLinksTable.push(['', ''])
-    }
-  }
-
-  console.log(quickLinksTable.toString())
+  
+  // Display quick links
+  displayQuickLinks()
 
   // Final sparkle animation
   console.log()

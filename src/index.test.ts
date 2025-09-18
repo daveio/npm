@@ -49,7 +49,7 @@ describe('main export', () => {
 
     // Check for social links
     expect(allOutput).toContain('https://dave.io') // Main website
-    expect(allOutput).toContain('https://dave.io/go/') // At least one social link
+    expect(allOutput).toContain('https://github.com/daveio') // GitHub link
 
     // Check for final message (no longer checking for interactive mode)
     expect(allOutput).toContain('All links above are clickable in supported terminals')
@@ -61,10 +61,10 @@ describe('main export', () => {
     const allOutput = consoleLogOutput.join('\n')
 
     // Check profile content is present
+    expect(allOutput).toContain('Dave Williams')
     expect(allOutput).toContain('Weapons-grade DevOps Engineer')
-    expect(allOutput).toContain('Full-stack Developer')
-    expect(allOutput).toContain('Infrastructure Architect')
-    expect(allOutput).toContain('Creative Technologist')
+    expect(allOutput).toContain('Berlin, Germany')
+    expect(allOutput).toContain('TypeScript, Rust, Go')
 
     // Check that horizontal separators are present (not box borders)
     expect(allOutput).toContain('─') // Horizontal line character
@@ -79,19 +79,19 @@ describe('main export', () => {
     expect(allOutput).toContain('Quick Links')
 
     // Check that all quick links are present
+    expect(allOutput).toContain('Twitter/X')
+    expect(allOutput).toContain('GitHub')
+    expect(allOutput).toContain('LinkedIn')
     expect(allOutput).toContain('Website')
-    expect(allOutput).toContain('Pronouns')
-    expect(allOutput).toContain('CV/Resume')
-    expect(allOutput).toContain('Give me a TODO')
-    expect(allOutput).toContain('Watch a talk')
-    expect(allOutput).toContain('Read a story')
+    expect(allOutput).toContain('Email')
+    expect(allOutput).toContain('npm')
 
-    // Check for descriptions
-    expect(allOutput).toContain('they/them')
-    expect(allOutput).toContain('View my experience')
-    expect(allOutput).toContain('Random task generator')
-    expect(allOutput).toContain('WAT: A Tale of JavaScript')
-    expect(allOutput).toContain('The Blit Chronicles')
+    // Check for URLs
+    expect(allOutput).toContain('https://x.com/0x434b')
+    expect(allOutput).toContain('https://github.com/daveio')
+    expect(allOutput).toContain('https://linkedin.com/in/0x434b')
+    expect(allOutput).toContain('https://dave.io')
+    expect(allOutput).toContain('mailto:npm@dave.io')
   }, 10000)
 
   it('uses consistent separator widths', async () => {
@@ -105,5 +105,60 @@ describe('main export', () => {
     // Check for the rainbow animation output (it gets animated so we can't check exact pattern)
     // Just verify the final message appears after it
     expect(allOutput).toContain('All links above are clickable in supported terminals')
+  }, 10000)
+
+  it('respects NO_ANIMATIONS environment variable', async () => {
+    // Set NO_ANIMATIONS
+    process.env.NO_ANIMATIONS = 'true'
+    
+    await main()
+
+    const allOutput = consoleLogOutput.join('\n')
+
+    // Should still have content (title rendered with CFonts block characters)
+    expect(allOutput).toContain('█') // Block characters from title
+    expect(allOutput).toContain('Weapons-grade DevOps Engineer')
+    
+    // Should have simplified loading message instead of spinners
+    expect(allOutput).toContain('Loading profile...')
+    
+    // Clean up
+    delete process.env.NO_ANIMATIONS
+  }, 10000)
+
+  it('respects NO_COLOR environment variable', async () => {
+    // Set NO_COLOR
+    process.env.NO_COLOR = 'true'
+    
+    await main()
+
+    const allOutput = consoleLogOutput.join('\n')
+
+    // Should still have content (title might be plain or with block chars)
+    expect(allOutput.length).toBeGreaterThan(0)
+    expect(allOutput).toContain('All links above are clickable')
+    
+    // Clean up
+    delete process.env.NO_COLOR
+  }, 10000)
+
+  it('handles both NO_ANIMATIONS and NO_COLOR together', async () => {
+    // Set both environment variables
+    process.env.NO_ANIMATIONS = 'true'
+    process.env.NO_COLOR = 'true'
+    
+    await main()
+
+    const allOutput = consoleLogOutput.join('\n')
+
+    // Should still have essential content
+    expect(allOutput.length).toBeGreaterThan(0)
+    expect(allOutput).toContain('Loading profile...')
+    expect(allOutput).toContain('Weapons-grade DevOps Engineer')
+    expect(allOutput).toContain('All links above are clickable')
+    
+    // Clean up
+    delete process.env.NO_ANIMATIONS
+    delete process.env.NO_COLOR
   }, 10000)
 })
