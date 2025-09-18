@@ -330,68 +330,108 @@ function createStyledTable(options = {}): Table.Table {
 function displayQuickLinks(): void {
   console.log()
   console.log(chalk.magenta('─'.repeat(90)))
-  console.log(chalk.bold(chalk.magenta('   🔗 Quick Links')))
+  console.log(chalk.bold(chalk.magenta('   🔗 Social Links')))
   console.log(chalk.magenta('─'.repeat(90)))
   console.log()
 
   const quickLinksTable = createStyledTable()
+  
+  // Add Web and Pronouns sections first
+  quickLinksTable.push([
+    `🌐  ${chalk.greenBright('Web')}`,
+    chalk.white(terminalLink('https://dave.io', 'https://dave.io'))
+  ])
+  quickLinksTable.push(['', ''])  // Empty row
+  quickLinksTable.push([
+    `⚧  ${chalk.blue('Pronouns')}`,
+    chalk.white(terminalLink('they/them', 'https://dave.io/gender'))
+  ])
+  quickLinksTable.push(['', ''])  // Empty row
 
   const socialLinks: SocialLink[] = [
     {
-      icon: getEmoji('bird'),
-      name: 'Twitter/X',
-      url: 'https://x.com/0x434b',
-      color: chalk.blueBright,
-      link: (text: string) => chalk.blueBright(terminalLink(text, 'https://x.com/0x434b'))
+      icon: '🌈',
+      name: 'Bluesky',
+      url: 'https://dave.io/go/bluesky',
+      color: chalk.yellow,
+      link: (text: string) => chalk.yellow(terminalLink(text, 'https://dave.io/go/bluesky'))
     },
     {
-      icon: getEmoji('computer'),
-      name: 'GitHub',
-      url: 'https://github.com/daveio',
-      color: chalk.white,
-      link: (text: string) => terminalLink(text, 'https://github.com/daveio')
+      icon: '📓',
+      name: 'Dreamwidth',
+      url: 'https://dave.io/go/dreamwidth',
+      color: chalk.green,
+      link: (text: string) => chalk.green(terminalLink(text, 'https://dave.io/go/dreamwidth'))
     },
     {
-      icon: getEmoji('briefcase'),
-      name: 'LinkedIn',
-      url: 'https://linkedin.com/in/0x434b',
+      icon: '📘',
+      name: 'Facebook',
+      url: 'https://dave.io/go/facebook',
       color: chalk.blue,
-      link: (text: string) => chalk.blue(terminalLink(text, 'https://linkedin.com/in/0x434b'))
+      link: (text: string) => chalk.blue(terminalLink(text, 'https://dave.io/go/facebook'))
     },
     {
-      icon: getEmoji('globe_with_meridians'),
-      name: 'Website',
-      url: 'https://dave.io',
-      color: chalk.yellowBright,
-      link: (text: string) => chalk.yellowBright(terminalLink(text, 'https://dave.io'))
-    },
-    {
-      icon: getEmoji('email'),
-      name: 'Email',
-      url: 'mailto:npm@dave.io',
-      color: chalk.magentaBright,
-      link: (text: string) => chalk.magentaBright(terminalLink(text, 'mailto:npm@dave.io'))
-    },
-    {
-      icon: getEmoji('package'),
-      name: 'npm',
-      url: 'https://npmjs.com/~daveio',
-      color: chalk.red,
-      link: (text: string) => chalk.red(terminalLink(text, 'https://npmjs.com/~daveio'))
-    },
-    {
-      icon: getEmoji('rocket'),
-      name: 'Bsky',
-      url: 'https://bsky.app/profile/dave.io',
-      color: chalk.cyanBright,
-      link: (text: string) => chalk.cyanBright(terminalLink(text, 'https://bsky.app/profile/dave.io'))
-    },
-    {
-      icon: getEmoji('robot'),
-      name: 'Mastodon',
-      url: 'https://hachyderm.io/@0x434b',
+      icon: '🐙',
+      name: 'GitHub',
+      url: 'https://dave.io/go/github',
       color: chalk.magenta,
-      link: (text: string) => chalk.magenta(terminalLink(text, 'https://hachyderm.io/@0x434b'))
+      link: (text: string) => chalk.magenta(terminalLink(text, 'https://dave.io/go/github'))
+    },
+    {
+      icon: '📷',
+      name: 'Instagram',
+      url: 'https://dave.io/go/instagram',
+      color: chalk.red,
+      link: (text: string) => chalk.red(terminalLink(text, 'https://dave.io/go/instagram'))
+    },
+    {
+      icon: '🔗',
+      name: 'LinkedIn',
+      url: 'https://dave.io/go/linkedin',
+      color: chalk.yellow,
+      link: (text: string) => chalk.yellow(terminalLink(text, 'https://dave.io/go/linkedin'))
+    },
+    {
+      icon: '🐘',
+      name: 'Mastodon',
+      url: 'https://dave.io/go/mastodon',
+      color: chalk.green,
+      link: (text: string) => chalk.green(terminalLink(text, 'https://dave.io/go/mastodon'))
+    },
+    {
+      icon: '🔮',
+      name: 'Pillowfort',
+      url: 'https://dave.io/go/pillowfort',
+      color: chalk.blue,
+      link: (text: string) => chalk.blue(terminalLink(text, 'https://dave.io/go/pillowfort'))
+    },
+    {
+      icon: '🧵',
+      name: 'Threads',
+      url: 'https://dave.io/go/threads',
+      color: chalk.magenta,
+      link: (text: string) => chalk.magenta(terminalLink(text, 'https://dave.io/go/threads'))
+    },
+    {
+      icon: '📱',
+      name: 'Tumblr',
+      url: 'https://dave.io/go/tumblr',
+      color: chalk.red,
+      link: (text: string) => chalk.red(terminalLink(text, 'https://dave.io/go/tumblr'))
+    },
+    {
+      icon: '🎥',
+      name: 'YouTube',
+      url: 'https://dave.io/go/youtube',
+      color: chalk.yellow,
+      link: (text: string) => chalk.yellow(terminalLink(text, 'https://dave.io/go/youtube'))
+    },
+    {
+      icon: '☠️',
+      name: 'Twitter',
+      url: "We don't use Twitter any more.",
+      color: chalk.dim,
+      link: (text: string) => chalk.dim(text) // No link for Twitter
     }
   ]
 

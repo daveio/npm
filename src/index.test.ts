@@ -49,7 +49,7 @@ describe('main export', () => {
 
     // Check for social links
     expect(allOutput).toContain('https://dave.io') // Main website
-    expect(allOutput).toContain('https://github.com/daveio') // GitHub link
+    expect(allOutput).toContain('https://dave.io/go/github') // GitHub link
 
     // Check for final message (no longer checking for interactive mode)
     expect(allOutput).toContain('All links above are clickable in supported terminals')
@@ -75,23 +75,23 @@ describe('main export', () => {
 
     const allOutput = consoleLogOutput.join('\n')
 
-    // Check for Quick Links section title
-    expect(allOutput).toContain('Quick Links')
+    // Check for Social Links section title  
+    expect(allOutput).toContain('Social Links')
 
-    // Check that all quick links are present
-    expect(allOutput).toContain('Twitter/X')
+    // Check that all social links are present
+    expect(allOutput).toContain('Bluesky')
     expect(allOutput).toContain('GitHub')
     expect(allOutput).toContain('LinkedIn')
-    expect(allOutput).toContain('Website')
-    expect(allOutput).toContain('Email')
-    expect(allOutput).toContain('npm')
+    expect(allOutput).toContain('Mastodon')
+    expect(allOutput).toContain('Instagram')
+    expect(allOutput).toContain('Facebook')
 
     // Check for URLs
-    expect(allOutput).toContain('https://x.com/0x434b')
-    expect(allOutput).toContain('https://github.com/daveio')
-    expect(allOutput).toContain('https://linkedin.com/in/0x434b')
+    expect(allOutput).toContain('https://dave.io/go/bluesky')
+    expect(allOutput).toContain('https://dave.io/go/github')
+    expect(allOutput).toContain('https://dave.io/go/linkedin')
     expect(allOutput).toContain('https://dave.io')
-    expect(allOutput).toContain('mailto:npm@dave.io')
+    expect(allOutput).toContain('https://dave.io/go/mastodon')
   }, 10000)
 
   it('uses consistent separator widths', async () => {
