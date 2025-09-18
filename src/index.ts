@@ -24,6 +24,10 @@ const MAX_TERMINAL_HEIGHT = 50
 const MATRIX_RAIN_FPS = 20
 const ANIMATION_FRAME_DELAY = 1000 / MATRIX_RAIN_FPS
 
+// Layout constants
+const SEPARATOR_WIDTH = 94
+const COLUMN_WIDTH = 44
+
 // Check for updates at startup
 const notifier = updateNotifier({ pkg })
 if (notifier.update) {
@@ -60,7 +64,11 @@ interface SocialLink {
   emoji?: string
 }
 
-// Matrix rain effect
+/**
+ * Creates a matrix-style rain animation effect in the terminal
+ * @param {number} duration - Duration of the animation in milliseconds (default: 3000)
+ * @returns {Promise<void>} Promise that resolves when animation completes
+ */
 async function matrixRain(duration = 3000): Promise<void> {
   // Skip animation if disabled or not in TTY
   if (SKIP_ANIMATIONS || !supportsAnsi) {
@@ -139,7 +147,12 @@ async function matrixRain(duration = 3000): Promise<void> {
   })
 }
 
-// Particle effect function
+/**
+ * Creates a particle animation effect around the given text
+ * @param {string} text - Text to display with particle effects
+ * @param {number} duration - Duration of the animation in milliseconds (default: 2000)
+ * @returns {Promise<void>} Promise that resolves when animation completes
+ */
 async function particleEffect(text: string, duration = 2000): Promise<void> {
   // Skip animation if disabled
   if (SKIP_ANIMATIONS || !supportsAnsi) {
@@ -196,7 +209,12 @@ async function generateAsciiArt(text: string): Promise<string> {
   })
 }
 
-// Glitch effect
+/**
+ * Creates a glitch text animation effect
+ * @param {string} text - Text to display with glitch effects
+ * @param {number} iterations - Number of glitch iterations (default: 10)
+ * @returns {Promise<void>} Promise that resolves when animation completes
+ */
 async function glitchEffect(text: string, iterations = 10): Promise<void> {
   // Skip animation if disabled
   if (SKIP_ANIMATIONS || !supportsAnsi) {
@@ -274,7 +292,7 @@ async function runLoadingSequence(): Promise<void> {
 // Display the profile section
 function displayProfile(): void {
   console.log()
-  console.log(chalk.cyan('─'.repeat(94)))
+  console.log(chalk.cyan('─'.repeat(SEPARATOR_WIDTH)))
   console.log()
 
   const profileLines = [
@@ -292,11 +310,15 @@ function displayProfile(): void {
   }
 
   console.log()
-  console.log(chalk.cyan('─'.repeat(94)))
+  console.log(chalk.cyan('─'.repeat(SEPARATOR_WIDTH)))
   console.log()
 }
 
-// Create a standardized table
+/**
+ * Creates a standardized table with consistent styling
+ * @param {object} options - Additional style options to override defaults
+ * @returns {Table.Table} A configured table instance
+ */
 function createStyledTable(options = {}): Table.Table {
   return new Table({
     chars: {
@@ -322,16 +344,19 @@ function createStyledTable(options = {}): Table.Table {
       border: [],
       ...options
     },
-    colWidths: [44, 44] // Increased to account for emoji width
+    colWidths: [COLUMN_WIDTH, COLUMN_WIDTH]
   })
 }
 
-// Display quick links section
-function displayQuickLinks(): void {
+/**
+ * Display social media links in a two-column table
+ * @returns {void}
+ */
+function displaySocialLinks(): void {
   console.log()
-  console.log(chalk.magenta('─'.repeat(94)))
+  console.log(chalk.magenta('─'.repeat(SEPARATOR_WIDTH)))
   console.log(chalk.bold(chalk.magenta('   🔗 Social Links')))
-  console.log(chalk.magenta('─'.repeat(94)))
+  console.log(chalk.magenta('─'.repeat(SEPARATOR_WIDTH)))
   console.log()
 
   const quickLinksTable = createStyledTable()
@@ -447,12 +472,17 @@ function displayQuickLinks(): void {
   }
 
   console.log(quickLinksTable.toString())
+}
 
-  // Display additional quick links
+/**
+ * Display quick action links in a two-column table
+ * @returns {void}
+ */
+function displayActionLinks(): void {
   console.log()
-  console.log(chalk.yellow('─'.repeat(94)))
+  console.log(chalk.yellow('─'.repeat(SEPARATOR_WIDTH)))
   console.log(chalk.bold(chalk.yellow('   ⚡ Quick Actions')))
-  console.log(chalk.yellow('─'.repeat(94)))
+  console.log(chalk.yellow('─'.repeat(SEPARATOR_WIDTH)))
   console.log()
 
   const quickLinks = [
@@ -482,31 +512,7 @@ function displayQuickLinks(): void {
     }
   ]
 
-  const actionsTable = new Table({
-    chars: {
-      top: '',
-      'top-mid': '',
-      'top-left': '',
-      'top-right': '',
-      bottom: '',
-      'bottom-mid': '',
-      'bottom-left': '',
-      'bottom-right': '',
-      left: '',
-      'left-mid': '',
-      mid: '',
-      'mid-mid': '',
-      right: '',
-      'right-mid': '',
-      middle: '   '
-    },
-    style: {
-      'padding-left': 2,
-      'padding-right': 2,
-      border: []
-    },
-    colWidths: [44, 44] // Increased to account for emoji width
-  })
+  const actionsTable = createStyledTable()
 
   // Group links into rows of 2
   const linkColors = [chalk.yellowBright, chalk.magentaBright, chalk.cyanBright, chalk.redBright]
@@ -523,6 +529,15 @@ function displayQuickLinks(): void {
   }
 
   console.log(actionsTable.toString())
+}
+
+/**
+ * Display all quick links including social and action links
+ * @returns {void}
+ */
+function displayQuickLinks(): void {
+  displaySocialLinks()
+  displayActionLinks()
 }
 
 async function main(): Promise<void> {
@@ -570,7 +585,7 @@ async function main(): Promise<void> {
   console.log()
 
   // Use a static gradient line instead of animated rainbow to prevent content overwriting
-  const finalLine = '═'.repeat(94)
+  const finalLine = '═'.repeat(SEPARATOR_WIDTH)
   if (!SKIP_ANIMATIONS && !NO_COLOR) {
     // Animated gradient effect that doesn't clear previous lines
     console.log(pastel(finalLine))
