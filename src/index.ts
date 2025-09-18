@@ -571,7 +571,7 @@ async function main(): Promise<void> {
 
   // Use a static gradient line instead of animated rainbow to prevent content overwriting
   const finalLine = '═'.repeat(90)
-  if (!process.env.NO_ANIMATIONS && !process.env.SKIP_ANIMATIONS && !process.env.NO_COLOR) {
+  if (!SKIP_ANIMATIONS && !process.env.NO_COLOR) {
     // Animated gradient effect that doesn't clear previous lines
     console.log(pastel(finalLine))
     // Small animation without using chalkAnimation which causes overwrites
