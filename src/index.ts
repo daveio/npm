@@ -335,18 +335,18 @@ function displayQuickLinks(): void {
   console.log()
 
   const quickLinksTable = createStyledTable()
-  
+
   // Add Web and Pronouns sections first
   quickLinksTable.push([
     `🌐  ${chalk.greenBright('Web')}`,
-    chalk.white(terminalLink('https://dave.io', 'https://dave.io'))
+    `${chalk.white(terminalLink('dave.io', 'https://dave.io'))}\n    ${chalk.gray('https://dave.io')}`
   ])
-  quickLinksTable.push(['', ''])  // Empty row
+  quickLinksTable.push(['', '']) // Empty row
   quickLinksTable.push([
     `⚧  ${chalk.blue('Pronouns')}`,
-    chalk.white(terminalLink('they/them', 'https://dave.io/gender'))
+    `${chalk.white(terminalLink('they/them', 'https://dave.io/gender'))}\n    ${chalk.gray('https://dave.io/gender')}`
   ])
-  quickLinksTable.push(['', ''])  // Empty row
+  quickLinksTable.push(['', '']) // Empty row
 
   const socialLinks: SocialLink[] = [
     {
@@ -439,8 +439,9 @@ function displayQuickLinks(): void {
     const link1 = socialLinks[i]
     const link2 = socialLinks[i + 1]
 
-    const cell1 = `${link1.icon}  ${link1.link(`${link1.name}: ${link1.url}`)}`
-    const cell2 = link2 ? `${link2.icon}  ${link2.link(`${link2.name}: ${link2.url}`)}` : ''
+    // Show clickable name and visible URL separately for better compatibility
+    const cell1 = `${link1.icon}  ${link1.link(link1.name)}\n    ${chalk.gray(link1.url)}`
+    const cell2 = link2 ? `${link2.icon}  ${link2.link(link2.name)}\n    ${chalk.gray(link2.url)}` : ''
 
     quickLinksTable.push([cell1, cell2])
   }
@@ -457,22 +458,26 @@ function displayQuickLinks(): void {
   const quickLinks = [
     {
       icon: getEmoji('page_facing_up') || '📄',
-      name: terminalLink(chalk.underline(chalk.yellowBright('CV/Resume')), 'https://dave.io/go/cv'),
+      name: 'CV/Resume',
+      url: 'https://dave.io/go/cv',
       detail: 'View my experience'
     },
     {
       icon: getEmoji('jigsaw') || '🧩',
-      name: terminalLink(chalk.underline(chalk.magentaBright('Give me a TODO')), 'https://dave.io/go/todo'),
+      name: 'Give me a TODO',
+      url: 'https://dave.io/go/todo',
       detail: 'Random task generator'
     },
     {
       icon: getEmoji('microphone') || '🎤',
-      name: terminalLink(chalk.underline(chalk.cyanBright('Watch a talk')), 'https://dave.io/go/wat'),
+      name: 'Watch a talk',
+      url: 'https://dave.io/go/wat',
       detail: 'WAT: A Tale of JavaScript'
     },
     {
       icon: getEmoji('parrot') || '🦜',
-      name: terminalLink(chalk.underline(chalk.redBright('Read a story')), 'https://dave.io/go/blit'),
+      name: 'Read a story',
+      url: 'https://dave.io/go/blit',
       detail: 'The Blit Chronicles'
     }
   ]
@@ -504,11 +509,14 @@ function displayQuickLinks(): void {
   })
 
   // Group links into rows of 2
+  const linkColors = [chalk.yellowBright, chalk.magentaBright, chalk.cyanBright, chalk.redBright]
   for (let i = 0; i < quickLinks.length; i += 2) {
     const row: string[] = []
     for (let j = 0; j < 2 && i + j < quickLinks.length; j++) {
       const link = quickLinks[i + j]
-      const content = `${link.icon}  ${link.name}`
+      const colorFn = linkColors[i + j]
+      // Show clickable name with color, and URL below in gray
+      const content = `${link.icon}  ${terminalLink(chalk.underline(colorFn(link.name)), link.url)}\n    ${chalk.gray(link.url)}`
       row.push(content)
     }
     actionsTable.push(row)

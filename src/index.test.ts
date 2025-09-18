@@ -75,7 +75,7 @@ describe('main export', () => {
 
     const allOutput = consoleLogOutput.join('\n')
 
-    // Check for Social Links section title  
+    // Check for Social Links section title
     expect(allOutput).toContain('Social Links')
 
     // Check that all social links are present
