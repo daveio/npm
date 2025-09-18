@@ -274,7 +274,7 @@ async function runLoadingSequence(): Promise<void> {
 // Display the profile section
 function displayProfile(): void {
   console.log()
-  console.log(chalk.cyan('─'.repeat(90)))
+  console.log(chalk.cyan('─'.repeat(94)))
   console.log()
 
   const profileLines = [
@@ -292,7 +292,7 @@ function displayProfile(): void {
   }
 
   console.log()
-  console.log(chalk.cyan('─'.repeat(90)))
+  console.log(chalk.cyan('─'.repeat(94)))
   console.log()
 }
 
@@ -570,8 +570,8 @@ async function main(): Promise<void> {
   console.log()
 
   // Use a static gradient line instead of animated rainbow to prevent content overwriting
-  const finalLine = '═'.repeat(90)
-  if (!SKIP_ANIMATIONS && !process.env.NO_COLOR) {
+  const finalLine = '═'.repeat(94)
+  if (!SKIP_ANIMATIONS && !NO_COLOR) {
     // Animated gradient effect that doesn't clear previous lines
     console.log(pastel(finalLine))
     // Small animation without using chalkAnimation which causes overwrites
@@ -580,7 +580,7 @@ async function main(): Promise<void> {
       process.stdout.write(`\r${gradientString.rainbow(finalLine)}`)
     }
     console.log() // Move to next line after animation
-  } else if (!process.env.NO_COLOR) {
+  } else if (!NO_COLOR) {
     // Static colored line when animations are disabled
     console.log(chalk.magenta(finalLine))
   } else {
