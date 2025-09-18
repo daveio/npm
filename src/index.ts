@@ -18,15 +18,60 @@ const supportsAnsi = process.stdout.isTTY && !NO_COLOR
 const termWidth = process.stdout.columns || 80
 const termHeight = process.stdout.rows || 24
 
-// Animation constants
-const MAX_TERMINAL_WIDTH = 200
-const MAX_TERMINAL_HEIGHT = 50
-const MATRIX_RAIN_FPS = 20
-const ANIMATION_FRAME_DELAY = 1000 / MATRIX_RAIN_FPS
+// Animation configuration
+const ANIMATION_CONFIG = {
+  // Matrix rain settings
+  matrixRain: {
+    defaultDuration: 2000,
+    maxWidth: 200,
+    maxHeight: 50,
+    fps: 20,
+    frameDelay: 50, // 1000 / fps
+    trailLength: 10,
+    respawnChance: 0.95,
+    performanceThreshold: 2000, // pixels before adaptive delay
+    chars: '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
+  },
+  // Particle effect settings
+  particleEffect: {
+    defaultDuration: 2000,
+    frameDelay: 100,
+    particles: ['∙∙∙∙∙', '●∙∙∙∙', '∙●∙∙∙', '∙∙●∙∙', '∙∙∙●∙', '∙∙∙∙●', '∙∙∙∙∙']
+  },
+  // Glitch effect settings
+  glitchEffect: {
+    defaultIterations: 15,
+    frameDelay: 50,
+    glitchThreshold: 0.7,
+    glitchChars: '!@#$%^&*()_+-=[]{}|;:,.<>?/~`'
+  },
+  // ASCII art settings
+  asciiArt: {
+    maxWidth: 80,
+    font: 'ANSI Shadow'
+  },
+  // Loading sequence settings
+  loadingSequence: {
+    spinnerDelay: 500
+  },
+  // Final animation settings
+  finalAnimation: {
+    iterations: 3,
+    frameDelay: 300
+  },
+  // Memory limits
+  memoryLimits: {
+    maxDropsArraySize: 1000,
+    maxFrameBufferSize: 50000 // characters
+  }
+} as const
 
 // Layout constants
 const SEPARATOR_WIDTH = 94
 const COLUMN_WIDTH = 44
+
+// Career start date
+const CAREER_START_DATE = new Date('2007-01-01')
 
 // Check for updates at startup
 const notifier = updateNotifier({ pkg })
@@ -66,26 +111,36 @@ interface SocialLink {
 
 /**
  * Creates a matrix-style rain animation effect in the terminal
- * @param {number} duration - Duration of the animation in milliseconds (default: 3000)
- * @returns {Promise<void>} Promise that resolves when animation completes
+ * @param duration - Duration of the animation in milliseconds
+ * @returns Promise that resolves when animation completes
+ * @throws Never throws - falls back gracefully on errors
  */
-async function matrixRain(duration = 3000): Promise<void> {
+async function matrixRain(duration = ANIMATION_CONFIG.matrixRain.defaultDuration): Promise<void> {
   // Skip animation if disabled or not in TTY
   if (SKIP_ANIMATIONS || !supportsAnsi) {
     return
   }
 
   return new Promise<void>((resolve) => {
-    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
-    const width = Math.min(termWidth, MAX_TERMINAL_WIDTH)
-    const height = Math.min(termHeight, MAX_TERMINAL_HEIGHT)
-    const drops: number[] = []
+    const chars = ANIMATION_CONFIG.matrixRain.chars
+    const width = Math.min(termWidth, ANIMATION_CONFIG.matrixRain.maxWidth)
+    const height = Math.min(termHeight, ANIMATION_CONFIG.matrixRain.maxHeight)
+
+    // Memory management: limit array size
+    if (width > ANIMATION_CONFIG.memoryLimits.maxDropsArraySize) {
+      console.warn('Terminal width exceeds memory limits, skipping animation')
+      resolve()
+      return
+    }
+
+    // Pre-allocate drops array for better performance
+    const drops = new Float32Array(width)
 
     // Pre-calculate character array for faster access
     const charArray = chars.split('')
     const charLength = charArray.length
 
-    // Initialize drop positions
+    // Initialize drop positions more efficiently
     for (let x = 0; x < width; x++) {
       drops[x] = Math.floor(Math.random() * -height)
     }
@@ -97,7 +152,10 @@ async function matrixRain(duration = 3000): Promise<void> {
 
     // Adaptive frame rate based on terminal size
     const pixelCount = width * height
-    const adaptiveDelay = pixelCount > 2000 ? ANIMATION_FRAME_DELAY * 2 : ANIMATION_FRAME_DELAY
+    const adaptiveDelay =
+      pixelCount > ANIMATION_CONFIG.matrixRain.performanceThreshold
+        ? ANIMATION_CONFIG.matrixRain.frameDelay * 2
+        : ANIMATION_CONFIG.matrixRain.frameDelay
 
     const interval = setInterval(() => {
       if (Date.now() - startTime > duration) {
@@ -112,33 +170,49 @@ async function matrixRain(duration = 3000): Promise<void> {
       const frameBuffer: string[] = []
       frameBuffer.push(ansiEscapes.cursorTo(0, 0))
 
-      for (let y = 0; y < height; y++) {
-        let lineBuffer = ''
-        for (let x = 0; x < width; x++) {
-          const dropY = drops[x]
-          if (dropY === y) {
-            // Bright green for head of drop
-            lineBuffer += chalk.greenBright(charArray[Math.floor(Math.random() * charLength)])
-          } else if (dropY === y - 1) {
-            // Medium green for second character
-            lineBuffer += chalk.green(charArray[Math.floor(Math.random() * charLength)])
-          } else if (dropY > y && dropY < y + 10) {
-            // Gray for trail
-            lineBuffer += chalk.gray(charArray[Math.floor(Math.random() * charLength)])
-          } else {
-            lineBuffer += ' '
-          }
-        }
-        frameBuffer.push(lineBuffer)
-        if (y < height - 1) frameBuffer.push('\n')
+      // Memory check before building frame
+      const estimatedFrameSize = width * height * 10 // estimate bytes per char
+      if (estimatedFrameSize > ANIMATION_CONFIG.memoryLimits.maxFrameBufferSize) {
+        clearInterval(interval)
+        process.stdout.write(ansiEscapes.clearScreen)
+        process.stdout.write(ansiEscapes.cursorShow)
+        resolve()
+        return
       }
 
+      // Use StringBuilder pattern for better performance
+      const lines: string[] = new Array(height)
+      for (let y = 0; y < height; y++) {
+        const lineChars: string[] = new Array(width)
+        for (let x = 0; x < width; x++) {
+          const dropY = drops[x]
+          const randomChar = charArray[Math.floor(Math.random() * charLength)]
+
+          if (dropY === y) {
+            // Bright green for head of drop
+            lineChars[x] = chalk.greenBright(randomChar)
+          } else if (dropY === y - 1) {
+            // Medium green for second character
+            lineChars[x] = chalk.green(randomChar)
+          } else if (dropY > y && dropY < y + ANIMATION_CONFIG.matrixRain.trailLength) {
+            // Gray for trail
+            lineChars[x] = chalk.gray(randomChar)
+          } else {
+            lineChars[x] = ' '
+          }
+        }
+        lines[y] = lineChars.join('')
+      }
+
+      frameBuffer.push(...lines)
+      if (height > 0) frameBuffer.push('\n')
+
       // Write entire frame at once
-      process.stdout.write(frameBuffer.join(''))
+      process.stdout.write(frameBuffer.join('\n'))
 
       // Update drop positions
       for (let x = 0; x < width; x++) {
-        if (drops[x] >= height && Math.random() > 0.95) {
+        if (drops[x] >= height && Math.random() > ANIMATION_CONFIG.matrixRain.respawnChance) {
           drops[x] = 0
         }
         drops[x]++
@@ -149,11 +223,12 @@ async function matrixRain(duration = 3000): Promise<void> {
 
 /**
  * Creates a particle animation effect around the given text
- * @param {string} text - Text to display with particle effects
- * @param {number} duration - Duration of the animation in milliseconds (default: 2000)
- * @returns {Promise<void>} Promise that resolves when animation completes
+ * @param text - Text to display with particle effects
+ * @param duration - Duration of the animation in milliseconds
+ * @returns Promise that resolves when animation completes
+ * @throws Never throws - falls back gracefully on errors
  */
-async function particleEffect(text: string, duration = 2000): Promise<void> {
+async function particleEffect(text: string, duration = ANIMATION_CONFIG.particleEffect.defaultDuration): Promise<void> {
   // Skip animation if disabled
   if (SKIP_ANIMATIONS || !supportsAnsi) {
     console.log(text)
@@ -161,7 +236,7 @@ async function particleEffect(text: string, duration = 2000): Promise<void> {
   }
 
   return new Promise<void>((resolve) => {
-    const frames = ['∙∙∙∙∙', '●∙∙∙∙', '∙●∙∙∙', '∙∙●∙∙', '∙∙∙●∙', '∙∙∙∙●', '∙∙∙∙∙']
+    const frames = ANIMATION_CONFIG.particleEffect.particles
     const startTime = Date.now()
     let frameIndex = 0
 
@@ -177,11 +252,16 @@ async function particleEffect(text: string, duration = 2000): Promise<void> {
       const particles = frames[frameIndex % frames.length]
       process.stdout.write(`\r${particles} ${vice(text)} ${particles}`)
       frameIndex++
-    }, 100)
+    }, ANIMATION_CONFIG.particleEffect.frameDelay)
   })
 }
 
-// ASCII art generator
+/**
+ * Generates ASCII art from text using figlet
+ * @param text - Text to convert to ASCII art
+ * @returns ASCII art string or original text on error
+ * @throws Never throws - returns original text on error
+ */
 async function generateAsciiArt(text: string): Promise<string> {
   // Fallback for environments that don't support ASCII art
   if (!supportsAnsi) {
@@ -192,10 +272,10 @@ async function generateAsciiArt(text: string): Promise<string> {
     figlet.text(
       text,
       {
-        font: 'ANSI Shadow',
+        font: ANIMATION_CONFIG.asciiArt.font,
         horizontalLayout: 'default',
         verticalLayout: 'default',
-        width: Math.min(termWidth, 80),
+        width: Math.min(termWidth, ANIMATION_CONFIG.asciiArt.maxWidth),
         whitespaceBreak: true
       },
       (err, data) => {
@@ -211,31 +291,32 @@ async function generateAsciiArt(text: string): Promise<string> {
 
 /**
  * Creates a glitch text animation effect
- * @param {string} text - Text to display with glitch effects
- * @param {number} iterations - Number of glitch iterations (default: 10)
- * @returns {Promise<void>} Promise that resolves when animation completes
+ * @param text - Text to display with glitch effects
+ * @param iterations - Number of glitch iterations
+ * @returns Promise that resolves when animation completes
+ * @throws Never throws - falls back to plain text on error
  */
-async function glitchEffect(text: string, iterations = 10): Promise<void> {
+async function glitchEffect(text: string, iterations = ANIMATION_CONFIG.glitchEffect.defaultIterations): Promise<void> {
   // Skip animation if disabled
   if (SKIP_ANIMATIONS || !supportsAnsi) {
     console.log(text)
     return
   }
 
-  const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`'
+  const glitchChars = ANIMATION_CONFIG.glitchEffect.glitchChars
 
   try {
     for (let i = 0; i < iterations; i++) {
       let glitched = ''
       for (const char of text) {
-        if (Math.random() > 0.7) {
+        if (Math.random() > ANIMATION_CONFIG.glitchEffect.glitchThreshold) {
           glitched += glitchChars[Math.floor(Math.random() * glitchChars.length)]
         } else {
           glitched += char
         }
       }
       process.stdout.write(`\r${cristal(glitched)}`)
-      await sleep(50)
+      await sleep(ANIMATION_CONFIG.glitchEffect.frameDelay)
     }
     process.stdout.write(`\r${atlas(text)}`)
   } catch (_err) {
@@ -284,7 +365,7 @@ async function runLoadingSequence(): Promise<void> {
 
   for (const { text, spinner } of spinners) {
     const oraSpinner = ora({ text, spinner }).start()
-    await sleep(500)
+    await sleep(ANIMATION_CONFIG.loadingSequence.spinnerDelay)
     oraSpinner.succeed()
   }
 }
@@ -299,7 +380,7 @@ function displayProfile(): void {
     `${getEmoji('rocket')}  Dave Williams`,
     `${getEmoji('wrench')}  Weapons-grade DevOps Engineer`,
     `${getEmoji('house')}  Berlin, Germany`,
-    `${getEmoji('cake')}  Coding for ${Math.floor((Date.now() - new Date('2007-01-01').getTime()) / (365.25 * 24 * 60 * 60 * 1000))} years`,
+    `${getEmoji('cake')}  Coding for ${Math.floor((Date.now() - CAREER_START_DATE.getTime()) / (365.25 * 24 * 60 * 60 * 1000))} years`,
     `${getEmoji('heart')}  TypeScript, Rust, Go, Infrastructure as Code`,
     `${getEmoji('briefcase')}  Building the future of developer tools`
   ]
@@ -542,13 +623,13 @@ async function main(): Promise<void> {
   }
 
   // Matrix rain intro (respects SKIP_ANIMATIONS)
-  await matrixRain(2000)
+  await matrixRain(ANIMATION_CONFIG.matrixRain.defaultDuration)
 
   // Display title
   await displayTitle()
 
   // Animated particles around version
-  await particleEffect(`v${pkg.version}`, 1500)
+  await particleEffect(`v${pkg.version}`, ANIMATION_CONFIG.particleEffect.defaultDuration * 0.75)
   console.log()
 
   // Run loading sequence
@@ -557,7 +638,7 @@ async function main(): Promise<void> {
   console.log()
 
   // Generate sparkly data points
-  const data = [50, 100, 75, 88, 92, 70, 65, 80, 90, 100]
+  const data: number[] = [50, 100, 75, 88, 92, 70, 65, 80, 90, 100]
   console.log(`${chalk.cyan('Activity Matrix: ')}${sparkly(data)}`)
   console.log()
 
@@ -569,7 +650,7 @@ async function main(): Promise<void> {
   displayProfile()
 
   // Glitch transition
-  await glitchEffect('>>> LOADING SOCIAL MATRIX <<<', 15)
+  await glitchEffect('>>> LOADING SOCIAL MATRIX <<<', ANIMATION_CONFIG.glitchEffect.defaultIterations)
   console.log('\n')
 
   // Display quick links
@@ -585,8 +666,8 @@ async function main(): Promise<void> {
     // Animated gradient effect that doesn't clear previous lines
     console.log(pastel(finalLine))
     // Small animation without using chalkAnimation which causes overwrites
-    for (let i = 0; i < 3; i++) {
-      await sleep(300)
+    for (let i = 0; i < ANIMATION_CONFIG.finalAnimation.iterations; i++) {
+      await sleep(ANIMATION_CONFIG.finalAnimation.frameDelay)
       process.stdout.write(`\r${gradientString.rainbow(finalLine)}`)
     }
     console.log() // Move to next line after animation
