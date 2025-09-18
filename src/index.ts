@@ -361,15 +361,10 @@ function displaySocialLinks(): void {
 
   const quickLinksTable = createStyledTable()
 
-  // Add Web and Pronouns sections first
+  // Add Web and Pronouns sections side by side
   quickLinksTable.push([
-    `🌐  ${chalk.greenBright('Web')}`,
-    `${chalk.white(terminalLink('dave.io', 'https://dave.io'))}\n    ${chalk.gray('https://dave.io')}`
-  ])
-  quickLinksTable.push(['', '']) // Empty row
-  quickLinksTable.push([
-    `⚧  ${chalk.blue('Pronouns')}`,
-    `${chalk.white(terminalLink('they/them', 'https://dave.io/gender'))}\n    ${chalk.gray('https://dave.io/gender')}`
+    `🌐  ${chalk.greenBright('Web')}\n    ${chalk.white(terminalLink('dave.io', 'https://dave.io'))}\n    ${chalk.white('https://dave.io')}`,
+    `⚧  ${chalk.blue('Pronouns')}\n    ${chalk.white(terminalLink('they/them', 'https://dave.io/gender'))}\n    ${chalk.white('https://dave.io/gender')}`
   ])
   quickLinksTable.push(['', '']) // Empty row
 
@@ -465,8 +460,8 @@ function displaySocialLinks(): void {
     const link2 = socialLinks[i + 1]
 
     // Show clickable name and visible URL separately for better compatibility
-    const cell1 = `${link1.icon}  ${link1.link(link1.name)}\n    ${chalk.gray(link1.url)}`
-    const cell2 = link2 ? `${link2.icon}  ${link2.link(link2.name)}\n    ${chalk.gray(link2.url)}` : ''
+    const cell1 = `${link1.icon}  ${link1.link(link1.name)}\n    ${chalk.white(link1.url)}`
+    const cell2 = link2 ? `${link2.icon}  ${link2.link(link2.name)}\n    ${chalk.white(link2.url)}` : ''
 
     quickLinksTable.push([cell1, cell2])
   }
@@ -521,8 +516,8 @@ function displayActionLinks(): void {
     for (let j = 0; j < 2 && i + j < quickLinks.length; j++) {
       const link = quickLinks[i + j]
       const colorFn = linkColors[i + j]
-      // Show clickable name with color, and URL below in gray
-      const content = `${link.icon}  ${terminalLink(chalk.underline(colorFn(link.name)), link.url)}\n    ${chalk.gray(link.url)}`
+      // Show clickable name with color, and URL below in white
+      const content = `${link.icon}  ${terminalLink(chalk.underline(colorFn(link.name)), link.url)}\n    ${chalk.white(link.url)}`
       row.push(content)
     }
     actionsTable.push(row)

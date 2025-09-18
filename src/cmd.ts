@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
-import index from './index.ts'
 import pkg from '../package.json' with { type: 'json' }
+import index from './index.ts'
 
 // Check for --version flag
 if (process.argv.includes('--version') || process.argv.includes('-v')) {
