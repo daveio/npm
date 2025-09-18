@@ -310,11 +310,11 @@ function createStyledTable(options = {}): Table.Table {
       'bottom-right': '',
       left: '',
       'left-mid': '',
-      mid: '─',
-      'mid-mid': '┼',
+      mid: '',
+      'mid-mid': '',
       right: '',
       'right-mid': '',
-      middle: ' │ '
+      middle: '   '
     },
     style: {
       'padding-left': 2,
@@ -494,11 +494,11 @@ function displayQuickLinks(): void {
       'bottom-right': '',
       left: '',
       'left-mid': '',
-      mid: '─',
-      'mid-mid': '┼',
+      mid: '',
+      'mid-mid': '',
       right: '',
       'right-mid': '',
-      middle: ' │ '
+      middle: '   '
     },
     style: {
       'padding-left': 2,
