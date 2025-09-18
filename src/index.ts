@@ -2,7 +2,6 @@ import ansiEscapes from 'ansi-escapes'
 import cfonts from 'cfonts'
 import chalk from 'chalk'
 import chalkAnimation from 'chalk-animation'
-// @ts-expect-error: No types for 'cli-spinners'
 import cliSpinners from 'cli-spinners'
 import Table from 'cli-table3'
 import figlet from 'figlet'
@@ -10,9 +9,15 @@ import { atlas, cristal, morning, pastel, teen, vice } from 'gradient-string'
 import { get as getEmoji } from 'node-emoji'
 import ora from 'ora'
 import sparkly from 'sparkly'
-// @ts-expect-error: No types for 'update-notifier'
 import updateNotifier from 'update-notifier'
 import pkg from '../package.json' with { type: 'json' }
+
+// Performance and environment detection
+const SKIP_ANIMATIONS = process.env.NO_ANIMATIONS === 'true'
+const NO_COLOR = process.env.NO_COLOR === 'true'
+const supportsAnsi = process.stdout.isTTY && !NO_COLOR
+const termWidth = process.stdout.columns || 80
+const termHeight = process.stdout.rows || 24
 
 // Check for updates at startup
 const notifier = updateNotifier({ pkg })
@@ -25,7 +30,19 @@ const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout
 
 // OSC-8 hyperlink utility function to make terminal links clickable
 const terminalLink = (text: string, url: string): string => {
-  return `\u001B]8;;${url}\u0007${text}\u001B]8;;\u0007`
+  // Validate URL to prevent injection attacks
+  try {
+    const validUrl = new URL(url)
+    if (!['http:', 'https:'].includes(validUrl.protocol)) {
+      return text // Return plain text for non-HTTP(S) URLs
+    }
+    // Sanitize the URL to prevent control character injection
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: Intentionally removing control characters for security
+    const sanitizedUrl = url.replace(/[\x00-\x1F\x7F]/g, '')
+    return `\u001B]8;;${sanitizedUrl}\u0007${text}\u001B]8;;\u0007`
+  } catch {
+    return text // Return plain text if URL is invalid
+  }
 }
 
 // Define social media link type for better type safety
@@ -40,9 +57,14 @@ interface SocialLink {
 
 // Matrix rain effect
 async function matrixRain(duration = 3000): Promise<void> {
+  // Skip animation if disabled or not in TTY
+  if (SKIP_ANIMATIONS || !supportsAnsi) {
+    return
+  }
+
   const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
-  const width = process.stdout.columns || 80
-  const height = process.stdout.rows || 24
+  const width = Math.min(termWidth, 200) // Cap width for performance
+  const height = Math.min(termHeight, 50) // Cap height for performance
   const drops: number[] = []
 
   for (let x = 0; x < width; x++) {
@@ -53,64 +75,90 @@ async function matrixRain(duration = 3000): Promise<void> {
   process.stdout.write(ansiEscapes.clearScreen)
 
   const startTime = Date.now()
-  const interval = setInterval(() => {
-    if (Date.now() - startTime > duration) {
-      clearInterval(interval)
-      process.stdout.write(ansiEscapes.clearScreen)
-      process.stdout.write(ansiEscapes.cursorShow)
-      return
-    }
+  let interval: NodeJS.Timeout | null = null
+  try {
+    interval = setInterval(() => {
+      if (Date.now() - startTime > duration) {
+        if (interval) clearInterval(interval)
+        process.stdout.write(ansiEscapes.clearScreen)
+        process.stdout.write(ansiEscapes.cursorShow)
+        return
+      }
 
-    process.stdout.write(ansiEscapes.cursorTo(0, 0))
+      process.stdout.write(ansiEscapes.cursorTo(0, 0))
 
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        if (drops[x] === y) {
-          process.stdout.write(chalk.greenBright(chars[Math.floor(Math.random() * chars.length)]))
-        } else if (drops[x] === y - 1) {
-          process.stdout.write(chalk.green(chars[Math.floor(Math.random() * chars.length)]))
-        } else if (drops[x] > y && drops[x] < y + 10) {
-          process.stdout.write(chalk.gray(chars[Math.floor(Math.random() * chars.length)]))
-        } else {
-          process.stdout.write(' ')
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          if (drops[x] === y) {
+            process.stdout.write(chalk.greenBright(chars[Math.floor(Math.random() * chars.length)]))
+          } else if (drops[x] === y - 1) {
+            process.stdout.write(chalk.green(chars[Math.floor(Math.random() * chars.length)]))
+          } else if (drops[x] > y && drops[x] < y + 10) {
+            process.stdout.write(chalk.gray(chars[Math.floor(Math.random() * chars.length)]))
+          } else {
+            process.stdout.write(' ')
+          }
         }
+        if (y < height - 1) process.stdout.write('\n')
       }
-      if (y < height - 1) process.stdout.write('\n')
-    }
 
-    for (let x = 0; x < width; x++) {
-      if (drops[x] >= height && Math.random() > 0.95) {
-        drops[x] = 0
+      for (let x = 0; x < width; x++) {
+        if (drops[x] >= height && Math.random() > 0.95) {
+          drops[x] = 0
+        }
+        drops[x]++
       }
-      drops[x]++
-    }
-  }, 50)
+    }, 50)
+  } catch (_err) {
+    // Fallback for environments that don't support animations
+    if (interval) clearInterval(interval)
+    process.stdout.write(ansiEscapes.cursorShow)
+  }
 }
 
 // Particle effect function
 async function particleEffect(text: string, duration = 2000): Promise<void> {
+  // Skip animation if disabled
+  if (SKIP_ANIMATIONS || !supportsAnsi) {
+    console.log(text)
+    return
+  }
+
   const frames = ['∙∙∙∙∙', '●∙∙∙∙', '∙●∙∙∙', '∙∙●∙∙', '∙∙∙●∙', '∙∙∙∙●', '∙∙∙∙∙']
 
   const startTime = Date.now()
   let frameIndex = 0
 
-  const interval = setInterval(() => {
-    if (Date.now() - startTime > duration) {
-      clearInterval(interval)
-      process.stdout.write(`\r${' '.repeat(50)}\r`)
-      return
-    }
+  let interval: NodeJS.Timeout | null = null
+  try {
+    interval = setInterval(() => {
+      if (Date.now() - startTime > duration) {
+        if (interval) clearInterval(interval)
+        process.stdout.write(`\r${' '.repeat(50)}\r`)
+        return
+      }
 
-    const particles = frames[frameIndex % frames.length]
-    process.stdout.write(`\r${particles} ${vice(text)} ${particles}`)
-    frameIndex++
-  }, 100)
+      const particles = frames[frameIndex % frames.length]
+      process.stdout.write(`\r${particles} ${vice(text)} ${particles}`)
+      frameIndex++
+    }, 100)
 
-  await sleep(duration)
+    await sleep(duration)
+  } catch (_err) {
+    // Fallback: just display the text
+    console.log(text)
+  } finally {
+    if (interval) clearInterval(interval)
+  }
 }
 
 // ASCII art generator
 async function generateAsciiArt(text: string): Promise<string> {
+  // Fallback for environments that don't support ASCII art
+  if (!supportsAnsi) {
+    return text
+  }
+
   return new Promise((resolve) => {
     figlet.text(
       text,
@@ -118,7 +166,7 @@ async function generateAsciiArt(text: string): Promise<string> {
         font: 'ANSI Shadow',
         horizontalLayout: 'default',
         verticalLayout: 'default',
-        width: 80,
+        width: Math.min(termWidth, 80),
         whitespaceBreak: true
       },
       (err, data) => {
@@ -134,47 +182,63 @@ async function generateAsciiArt(text: string): Promise<string> {
 
 // Glitch effect
 async function glitchEffect(text: string, iterations = 10): Promise<void> {
+  // Skip animation if disabled
+  if (SKIP_ANIMATIONS || !supportsAnsi) {
+    console.log(text)
+    return
+  }
+
   const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`'
 
-  for (let i = 0; i < iterations; i++) {
-    let glitched = ''
-    for (const char of text) {
-      if (Math.random() > 0.7) {
-        glitched += glitchChars[Math.floor(Math.random() * glitchChars.length)]
-      } else {
-        glitched += char
+  try {
+    for (let i = 0; i < iterations; i++) {
+      let glitched = ''
+      for (const char of text) {
+        if (Math.random() > 0.7) {
+          glitched += glitchChars[Math.floor(Math.random() * glitchChars.length)]
+        } else {
+          glitched += char
+        }
       }
+      process.stdout.write(`\r${cristal(glitched)}`)
+      await sleep(50)
     }
-    process.stdout.write(`\r${cristal(glitched)}`)
-    await sleep(50)
+    process.stdout.write(`\r${atlas(text)}`)
+  } catch (_err) {
+    // Fallback to plain text
+    console.log(text)
   }
-  process.stdout.write(`\r${atlas(text)}`)
 }
 
 async function main(): Promise<void> {
-  // Clear screen for fresh start
-  console.clear()
+  // Clear screen for fresh start (only if in TTY)
+  if (supportsAnsi) {
+    console.clear()
+  }
 
-  // Matrix rain intro
+  // Matrix rain intro (respects SKIP_ANIMATIONS)
   await matrixRain(2000)
 
   // Epic ASCII art title with CFonts
-  console.log(
-    cfonts.render('DAVE.IO', {
-      font: 'block',
-      align: 'center',
-      colors: ['cyan', 'magenta'],
-      background: 'transparent',
-      letterSpacing: 1,
-      lineHeight: 1,
-      space: true,
-      maxLength: '0',
-      gradient: ['cyan', 'magenta', 'yellow'],
-      independentGradient: false,
-      transitionGradient: true,
-      env: 'node'
-    }).string
-  )
+  const titleRender = cfonts.render('DAVE.IO', {
+    font: 'block',
+    align: 'center',
+    colors: ['cyan', 'magenta'],
+    background: 'transparent',
+    letterSpacing: 1,
+    lineHeight: 1,
+    space: true,
+    maxLength: '0',
+    gradient: ['cyan', 'magenta', 'yellow'],
+    independentGradient: false,
+    transitionGradient: true,
+    env: 'node'
+  })
+  if (titleRender !== false) {
+    console.log(titleRender.string)
+  } else {
+    console.log(chalk.cyan('DAVE.IO'))
+  }
 
   // Animated particles around version
   await particleEffect(`v${pkg.version}`, 1500)
@@ -402,7 +466,7 @@ async function main(): Promise<void> {
   // Separator before Quick Links
   console.log(chalk.magenta('─'.repeat(90)))
   console.log()
-  console.log(chalk.magenta.bold('                                Quick Links                                '))
+  console.log(chalk.magenta(chalk.bold('                                Quick Links                                ')))
   console.log()
 
   // Quick links section as two-column table like social links
@@ -442,27 +506,27 @@ async function main(): Promise<void> {
     },
     {
       icon: getEmoji('rainbow'),
-      name: terminalLink(chalk.underline(chalk.blueBright('Pronouns')), 'https://dave.io/gender'),
+      name: terminalLink(chalk.underline(chalk.blue('Pronouns')), 'https://dave.io/gender'),
       detail: 'they/them'
     },
     {
       icon: getEmoji('briefcase'),
-      name: terminalLink(chalk.underline(chalk.yellowBright('CV/Resume')), 'https://dave.io/go/cv'),
+      name: terminalLink(chalk.underline(chalk.yellow('CV/Resume')), 'https://dave.io/go/cv'),
       detail: 'View my experience'
     },
     {
       icon: getEmoji('jigsaw') || '🧩',
-      name: terminalLink(chalk.underline(chalk.magentaBright('Give me a TODO')), 'https://dave.io/go/todo'),
+      name: terminalLink(chalk.underline(chalk.magenta('Give me a TODO')), 'https://dave.io/go/todo'),
       detail: 'Random task generator'
     },
     {
       icon: getEmoji('microphone'),
-      name: terminalLink(chalk.underline(chalk.cyanBright('Watch a talk')), 'https://dave.io/go/wat'),
+      name: terminalLink(chalk.underline(chalk.cyan('Watch a talk')), 'https://dave.io/go/wat'),
       detail: 'WAT: A Tale of JavaScript'
     },
     {
       icon: getEmoji('parrot'),
-      name: terminalLink(chalk.underline(chalk.redBright('Read a story')), 'https://dave.io/go/blit'),
+      name: terminalLink(chalk.underline(chalk.red('Read a story')), 'https://dave.io/go/blit'),
       detail: 'The Blit Chronicles'
     }
   ]

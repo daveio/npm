@@ -35,8 +35,8 @@ describe('main export', () => {
     // Set a longer timeout for this test since it has animations
     await main()
 
-    // Check that console.clear was called
-    expect(consoleClearCalled).toBe(true)
+    // Check that console.clear was NOT called in non-TTY environment
+    expect(consoleClearCalled).toBe(false)
 
     // Check that there are console log calls
     expect(consoleLogOutput.length).toBeGreaterThan(0)
