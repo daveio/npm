@@ -68,6 +68,8 @@ const ANIMATION_CONFIG = {
 
 // Layout constants
 const SEPARATOR_WIDTH = 94
+// Column width increased from 40 to 44 to accommodate emoji display width variations
+// Emojis typically render wider than regular characters, requiring extra space for proper alignment
 const COLUMN_WIDTH = 44
 
 // Career start date
@@ -110,6 +112,91 @@ interface SocialLink {
 }
 
 /**
+ * Initializes drop positions for the matrix rain animation
+ * @param width - Terminal width
+ * @param height - Terminal height
+ * @returns Float32Array of initial drop positions
+ */
+function initializeMatrixDrops(width: number, height: number): Float32Array {
+  const drops = new Float32Array(width)
+  for (let x = 0; x < width; x++) {
+    drops[x] = Math.floor(Math.random() * -height)
+  }
+  return drops
+}
+
+/**
+ * Calculates adaptive frame delay based on terminal size
+ * @param width - Terminal width
+ * @param height - Terminal height
+ * @returns Frame delay in milliseconds
+ */
+function calculateAdaptiveDelay(width: number, height: number): number {
+  const pixelCount = width * height
+  return pixelCount > ANIMATION_CONFIG.matrixRain.performanceThreshold
+    ? ANIMATION_CONFIG.matrixRain.frameDelay * 2
+    : ANIMATION_CONFIG.matrixRain.frameDelay
+}
+
+/**
+ * Renders a single frame of the matrix rain animation
+ * @param width - Terminal width
+ * @param height - Terminal height
+ * @param drops - Array of drop positions
+ * @param charArray - Array of available characters
+ * @returns Rendered frame as string array
+ */
+function renderMatrixFrame(width: number, height: number, drops: Float32Array, charArray: string[]): string[] {
+  const frameBuffer: string[] = []
+  frameBuffer.push(ansiEscapes.cursorTo(0, 0))
+
+  const lines: string[] = new Array(height)
+  const charLength = charArray.length
+
+  for (let y = 0; y < height; y++) {
+    const lineChars: string[] = new Array(width)
+    for (let x = 0; x < width; x++) {
+      const dropY = drops[x]
+      const randomChar = charArray[Math.floor(Math.random() * charLength)]
+
+      if (dropY === y) {
+        // Bright green for head of drop
+        lineChars[x] = chalk.greenBright(randomChar)
+      } else if (dropY === y - 1) {
+        // Medium green for second character
+        lineChars[x] = chalk.green(randomChar)
+      } else if (y > dropY && y < dropY + ANIMATION_CONFIG.matrixRain.trailLength) {
+        // Gray for trail (appears above/behind the drop head)
+        lineChars[x] = chalk.gray(randomChar)
+      } else {
+        lineChars[x] = ' '
+      }
+    }
+    lines[y] = lineChars.join('')
+  }
+
+  frameBuffer.push(...lines)
+  if (height > 0) frameBuffer.push('\n')
+
+  return frameBuffer
+}
+
+/**
+ * Updates drop positions for the next animation frame
+ * @param drops - Array of current drop positions
+ * @param width - Terminal width
+ * @param height - Terminal height
+ */
+function updateDropPositions(drops: Float32Array, width: number, height: number): void {
+  for (let x = 0; x < width; x++) {
+    if (drops[x] >= height && Math.random() > ANIMATION_CONFIG.matrixRain.respawnChance) {
+      drops[x] = 0
+    }
+    drops[x]++
+  }
+}
+
+/**
  * Creates a matrix-style rain animation effect in the terminal
  * @param duration - Duration of the animation in milliseconds
  * @returns Promise that resolves when animation completes
@@ -133,29 +220,15 @@ async function matrixRain(duration = ANIMATION_CONFIG.matrixRain.defaultDuration
       return
     }
 
-    // Pre-allocate drops array for better performance
-    const drops = new Float32Array(width)
-
-    // Pre-calculate character array for faster access
+    // Initialize animation state
+    const drops = initializeMatrixDrops(width, height)
     const charArray = chars.split('')
-    const charLength = charArray.length
-
-    // Initialize drop positions more efficiently
-    for (let x = 0; x < width; x++) {
-      drops[x] = Math.floor(Math.random() * -height)
-    }
+    const adaptiveDelay = calculateAdaptiveDelay(width, height)
 
     process.stdout.write(ansiEscapes.cursorHide)
     process.stdout.write(ansiEscapes.clearScreen)
 
     const startTime = Date.now()
-
-    // Adaptive frame rate based on terminal size
-    const pixelCount = width * height
-    const adaptiveDelay =
-      pixelCount > ANIMATION_CONFIG.matrixRain.performanceThreshold
-        ? ANIMATION_CONFIG.matrixRain.frameDelay * 2
-        : ANIMATION_CONFIG.matrixRain.frameDelay
 
     const interval = setInterval(() => {
       if (Date.now() - startTime > duration) {
@@ -165,10 +238,6 @@ async function matrixRain(duration = ANIMATION_CONFIG.matrixRain.defaultDuration
         resolve()
         return
       }
-
-      // Buffer the entire frame before writing
-      const frameBuffer: string[] = []
-      frameBuffer.push(ansiEscapes.cursorTo(0, 0))
 
       // Memory check before building frame
       const estimatedFrameSize = width * height * 10 // estimate bytes per char
@@ -180,43 +249,12 @@ async function matrixRain(duration = ANIMATION_CONFIG.matrixRain.defaultDuration
         return
       }
 
-      // Use StringBuilder pattern for better performance
-      const lines: string[] = new Array(height)
-      for (let y = 0; y < height; y++) {
-        const lineChars: string[] = new Array(width)
-        for (let x = 0; x < width; x++) {
-          const dropY = drops[x]
-          const randomChar = charArray[Math.floor(Math.random() * charLength)]
-
-          if (dropY === y) {
-            // Bright green for head of drop
-            lineChars[x] = chalk.greenBright(randomChar)
-          } else if (dropY === y - 1) {
-            // Medium green for second character
-            lineChars[x] = chalk.green(randomChar)
-          } else if (dropY > y && dropY < y + ANIMATION_CONFIG.matrixRain.trailLength) {
-            // Gray for trail
-            lineChars[x] = chalk.gray(randomChar)
-          } else {
-            lineChars[x] = ' '
-          }
-        }
-        lines[y] = lineChars.join('')
-      }
-
-      frameBuffer.push(...lines)
-      if (height > 0) frameBuffer.push('\n')
-
-      // Write entire frame at once
+      // Render and display frame
+      const frameBuffer = renderMatrixFrame(width, height, drops, charArray)
       process.stdout.write(frameBuffer.join('\n'))
 
-      // Update drop positions
-      for (let x = 0; x < width; x++) {
-        if (drops[x] >= height && Math.random() > ANIMATION_CONFIG.matrixRain.respawnChance) {
-          drops[x] = 0
-        }
-        drops[x]++
-      }
+      // Update animation state for next frame
+      updateDropPositions(drops, width, height)
     }, adaptiveDelay)
   })
 }
