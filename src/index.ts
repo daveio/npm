@@ -407,6 +407,75 @@ function displayQuickLinks(): void {
   }
 
   console.log(quickLinksTable.toString())
+
+  // Display additional quick links
+  console.log()
+  console.log(chalk.yellow('─'.repeat(90)))
+  console.log(chalk.bold(chalk.yellow('   ⚡ Quick Actions')))
+  console.log(chalk.yellow('─'.repeat(90)))
+  console.log()
+
+  const quickLinks = [
+    {
+      icon: getEmoji('page_facing_up') || '📄',
+      name: terminalLink(chalk.underline(chalk.yellowBright('CV/Resume')), 'https://dave.io/go/cv'),
+      detail: 'View my experience'
+    },
+    {
+      icon: getEmoji('jigsaw') || '🧩',
+      name: terminalLink(chalk.underline(chalk.magentaBright('Give me a TODO')), 'https://dave.io/go/todo'),
+      detail: 'Random task generator'
+    },
+    {
+      icon: getEmoji('microphone') || '🎤',
+      name: terminalLink(chalk.underline(chalk.cyanBright('Watch a talk')), 'https://dave.io/go/wat'),
+      detail: 'WAT: A Tale of JavaScript'
+    },
+    {
+      icon: getEmoji('parrot') || '🦜',
+      name: terminalLink(chalk.underline(chalk.redBright('Read a story')), 'https://dave.io/go/blit'),
+      detail: 'The Blit Chronicles'
+    }
+  ]
+
+  const actionsTable = new Table({
+    chars: {
+      top: '',
+      'top-mid': '',
+      'top-left': '',
+      'top-right': '',
+      bottom: '',
+      'bottom-mid': '',
+      'bottom-left': '',
+      'bottom-right': '',
+      left: '',
+      'left-mid': '',
+      mid: '─',
+      'mid-mid': '┼',
+      right: '',
+      'right-mid': '',
+      middle: ' │ '
+    },
+    style: {
+      'padding-left': 2,
+      'padding-right': 2,
+      border: []
+    },
+    colWidths: [40, 40]
+  })
+
+  // Group links into rows of 2
+  for (let i = 0; i < quickLinks.length; i += 2) {
+    const row: string[] = []
+    for (let j = 0; j < 2 && i + j < quickLinks.length; j++) {
+      const link = quickLinks[i + j]
+      const content = `${link.icon}  ${link.name}`
+      row.push(content)
+    }
+    actionsTable.push(row)
+  }
+
+  console.log(actionsTable.toString())
 }
 
 async function main(): Promise<void> {
