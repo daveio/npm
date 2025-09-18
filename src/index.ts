@@ -363,8 +363,8 @@ function displaySocialLinks(): void {
 
   // Add Web and Pronouns sections side by side
   quickLinksTable.push([
-    `🌐  ${chalk.greenBright('Web')}\n    ${chalk.white(terminalLink('dave.io', 'https://dave.io'))}\n    ${chalk.white('https://dave.io')}`,
-    `⚧  ${chalk.blue('Pronouns')}\n    ${chalk.white(terminalLink('they/them', 'https://dave.io/gender'))}\n    ${chalk.white('https://dave.io/gender')}`
+    `🌐  ${chalk.greenBright('Web')}\n    ${chalk.greenBright(terminalLink('dave.io', 'https://dave.io'))}\n    ${chalk.white('https://dave.io')}`,
+    `⚧  ${chalk.blue('Pronouns')}\n    ${chalk.blue(terminalLink('they/them', 'https://dave.io/gender'))}\n    ${chalk.white('https://dave.io/gender')}`
   ])
   quickLinksTable.push(['', '']) // Empty row
 
