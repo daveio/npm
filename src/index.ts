@@ -322,16 +322,16 @@ function createStyledTable(options = {}): Table.Table {
       border: [],
       ...options
     },
-    colWidths: [40, 40]
+    colWidths: [44, 44] // Increased to account for emoji width
   })
 }
 
 // Display quick links section
 function displayQuickLinks(): void {
   console.log()
-  console.log(chalk.magenta('─'.repeat(90)))
+  console.log(chalk.magenta('─'.repeat(94)))
   console.log(chalk.bold(chalk.magenta('   🔗 Social Links')))
-  console.log(chalk.magenta('─'.repeat(90)))
+  console.log(chalk.magenta('─'.repeat(94)))
   console.log()
 
   const quickLinksTable = createStyledTable()
@@ -450,9 +450,9 @@ function displayQuickLinks(): void {
 
   // Display additional quick links
   console.log()
-  console.log(chalk.yellow('─'.repeat(90)))
+  console.log(chalk.yellow('─'.repeat(94)))
   console.log(chalk.bold(chalk.yellow('   ⚡ Quick Actions')))
-  console.log(chalk.yellow('─'.repeat(90)))
+  console.log(chalk.yellow('─'.repeat(94)))
   console.log()
 
   const quickLinks = [
@@ -505,7 +505,7 @@ function displayQuickLinks(): void {
       'padding-right': 2,
       border: []
     },
-    colWidths: [40, 40]
+    colWidths: [44, 44] // Increased to account for emoji width
   })
 
   // Group links into rows of 2
