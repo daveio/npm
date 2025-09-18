@@ -5,7 +5,7 @@ import chalkAnimation from 'chalk-animation'
 import cliSpinners from 'cli-spinners'
 import Table from 'cli-table3'
 import figlet from 'figlet'
-import { atlas, cristal, morning, pastel, teen, vice } from 'gradient-string'
+import { atlas, cristal, pastel, vice } from 'gradient-string'
 import { get as getEmoji } from 'node-emoji'
 import ora from 'ora'
 import sparkly from 'sparkly'
@@ -74,6 +74,11 @@ async function matrixRain(duration = 3000): Promise<void> {
     const height = Math.min(termHeight, MAX_TERMINAL_HEIGHT)
     const drops: number[] = []
 
+    // Pre-calculate character array for faster access
+    const charArray = chars.split('')
+    const charLength = charArray.length
+
+    // Initialize drop positions
     for (let x = 0; x < width; x++) {
       drops[x] = Math.floor(Math.random() * -height)
     }
@@ -82,6 +87,11 @@ async function matrixRain(duration = 3000): Promise<void> {
     process.stdout.write(ansiEscapes.clearScreen)
 
     const startTime = Date.now()
+
+    // Adaptive frame rate based on terminal size
+    const pixelCount = width * height
+    const adaptiveDelay = pixelCount > 2000 ? ANIMATION_FRAME_DELAY * 2 : ANIMATION_FRAME_DELAY
+
     const interval = setInterval(() => {
       if (Date.now() - startTime > duration) {
         clearInterval(interval)
@@ -91,30 +101,42 @@ async function matrixRain(duration = 3000): Promise<void> {
         return
       }
 
-      process.stdout.write(ansiEscapes.cursorTo(0, 0))
+      // Buffer the entire frame before writing
+      const frameBuffer: string[] = []
+      frameBuffer.push(ansiEscapes.cursorTo(0, 0))
 
       for (let y = 0; y < height; y++) {
+        let lineBuffer = ''
         for (let x = 0; x < width; x++) {
-          if (drops[x] === y) {
-            process.stdout.write(chalk.greenBright(chars[Math.floor(Math.random() * chars.length)]))
-          } else if (drops[x] === y - 1) {
-            process.stdout.write(chalk.green(chars[Math.floor(Math.random() * chars.length)]))
-          } else if (drops[x] > y && drops[x] < y + 10) {
-            process.stdout.write(chalk.gray(chars[Math.floor(Math.random() * chars.length)]))
+          const dropY = drops[x]
+          if (dropY === y) {
+            // Bright green for head of drop
+            lineBuffer += chalk.greenBright(charArray[Math.floor(Math.random() * charLength)])
+          } else if (dropY === y - 1) {
+            // Medium green for second character
+            lineBuffer += chalk.green(charArray[Math.floor(Math.random() * charLength)])
+          } else if (dropY > y && dropY < y + 10) {
+            // Gray for trail
+            lineBuffer += chalk.gray(charArray[Math.floor(Math.random() * charLength)])
           } else {
-            process.stdout.write(' ')
+            lineBuffer += ' '
           }
         }
-        if (y < height - 1) process.stdout.write('\n')
+        frameBuffer.push(lineBuffer)
+        if (y < height - 1) frameBuffer.push('\n')
       }
 
+      // Write entire frame at once
+      process.stdout.write(frameBuffer.join(''))
+
+      // Update drop positions
       for (let x = 0; x < width; x++) {
         if (drops[x] >= height && Math.random() > 0.95) {
           drops[x] = 0
         }
         drops[x]++
       }
-    }, ANIMATION_FRAME_DELAY)
+    }, adaptiveDelay)
   })
 }
 
@@ -257,12 +279,12 @@ function displayProfile(): void {
   console.log()
 
   const profileLines = [
-    getEmoji('rocket') + '  Dave Williams',
-    getEmoji('wrench') + '  Weapons-grade DevOps Engineer',
-    getEmoji('house') + '  Berlin, Germany',
-    getEmoji('cake') + `  Coding for ${Math.floor((Date.now() - new Date('2007-01-01').getTime()) / (365.25 * 24 * 60 * 60 * 1000))} years`,
-    getEmoji('heart') + '  TypeScript, Rust, Go, Infrastructure as Code',
-    getEmoji('briefcase') + '  Building the future of developer tools'
+    `${getEmoji('rocket')}  Dave Williams`,
+    `${getEmoji('wrench')}  Weapons-grade DevOps Engineer`,
+    `${getEmoji('house')}  Berlin, Germany`,
+    `${getEmoji('cake')}  Coding for ${Math.floor((Date.now() - new Date('2007-01-01').getTime()) / (365.25 * 24 * 60 * 60 * 1000))} years`,
+    `${getEmoji('heart')}  TypeScript, Rust, Go, Infrastructure as Code`,
+    `${getEmoji('briefcase')}  Building the future of developer tools`
   ]
 
   for (const line of profileLines) {
@@ -295,9 +317,9 @@ function createStyledTable(options = {}): Table.Table {
       'right-mid': '',
       middle: ' │ '
     },
-    style: { 
-      'padding-left': 2, 
-      'padding-right': 2, 
+    style: {
+      'padding-left': 2,
+      'padding-right': 2,
       border: [],
       ...options
     },
@@ -314,7 +336,7 @@ function displayQuickLinks(): void {
   console.log()
 
   const quickLinksTable = createStyledTable()
-  
+
   const socialLinks: SocialLink[] = [
     {
       icon: getEmoji('bird'),
@@ -423,7 +445,7 @@ async function main(): Promise<void> {
   // Glitch transition
   await glitchEffect('>>> LOADING SOCIAL MATRIX <<<', 15)
   console.log('\n')
-  
+
   // Display quick links
   displayQuickLinks()
 

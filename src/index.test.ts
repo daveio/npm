@@ -110,7 +110,7 @@ describe('main export', () => {
   it('respects NO_ANIMATIONS environment variable', async () => {
     // Set NO_ANIMATIONS
     process.env.NO_ANIMATIONS = 'true'
-    
+
     await main()
 
     const allOutput = consoleLogOutput.join('\n')
@@ -118,10 +118,10 @@ describe('main export', () => {
     // Should still have content (title rendered with CFonts block characters)
     expect(allOutput).toContain('█') // Block characters from title
     expect(allOutput).toContain('Weapons-grade DevOps Engineer')
-    
+
     // Should have simplified loading message instead of spinners
     expect(allOutput).toContain('Loading profile...')
-    
+
     // Clean up
     delete process.env.NO_ANIMATIONS
   }, 10000)
@@ -129,7 +129,7 @@ describe('main export', () => {
   it('respects NO_COLOR environment variable', async () => {
     // Set NO_COLOR
     process.env.NO_COLOR = 'true'
-    
+
     await main()
 
     const allOutput = consoleLogOutput.join('\n')
@@ -137,7 +137,7 @@ describe('main export', () => {
     // Should still have content (title might be plain or with block chars)
     expect(allOutput.length).toBeGreaterThan(0)
     expect(allOutput).toContain('All links above are clickable')
-    
+
     // Clean up
     delete process.env.NO_COLOR
   }, 10000)
@@ -146,7 +146,7 @@ describe('main export', () => {
     // Set both environment variables
     process.env.NO_ANIMATIONS = 'true'
     process.env.NO_COLOR = 'true'
-    
+
     await main()
 
     const allOutput = consoleLogOutput.join('\n')
@@ -156,7 +156,7 @@ describe('main export', () => {
     expect(allOutput).toContain('Loading profile...')
     expect(allOutput).toContain('Weapons-grade DevOps Engineer')
     expect(allOutput).toContain('All links above are clickable')
-    
+
     // Clean up
     delete process.env.NO_ANIMATIONS
     delete process.env.NO_COLOR
