@@ -373,78 +373,78 @@ function displaySocialLinks(): void {
       icon: '🌈',
       name: 'Bluesky',
       url: 'https://dave.io/go/bluesky',
-      color: chalk.yellow,
-      link: (text: string) => chalk.yellow(terminalLink(text, 'https://dave.io/go/bluesky'))
+      color: chalk.yellowBright,
+      link: (text: string) => chalk.yellowBright(terminalLink(text, 'https://dave.io/go/bluesky'))
     },
     {
       icon: '📓',
       name: 'Dreamwidth',
       url: 'https://dave.io/go/dreamwidth',
-      color: chalk.green,
-      link: (text: string) => chalk.green(terminalLink(text, 'https://dave.io/go/dreamwidth'))
+      color: chalk.greenBright,
+      link: (text: string) => chalk.greenBright(terminalLink(text, 'https://dave.io/go/dreamwidth'))
     },
     {
       icon: '📘',
       name: 'Facebook',
       url: 'https://dave.io/go/facebook',
-      color: chalk.blue,
-      link: (text: string) => chalk.blue(terminalLink(text, 'https://dave.io/go/facebook'))
+      color: chalk.blueBright,
+      link: (text: string) => chalk.blueBright(terminalLink(text, 'https://dave.io/go/facebook'))
     },
     {
       icon: '🐙',
       name: 'GitHub',
       url: 'https://dave.io/go/github',
-      color: chalk.magenta,
-      link: (text: string) => chalk.magenta(terminalLink(text, 'https://dave.io/go/github'))
+      color: chalk.magentaBright,
+      link: (text: string) => chalk.magentaBright(terminalLink(text, 'https://dave.io/go/github'))
     },
     {
       icon: '📷',
       name: 'Instagram',
       url: 'https://dave.io/go/instagram',
-      color: chalk.red,
-      link: (text: string) => chalk.red(terminalLink(text, 'https://dave.io/go/instagram'))
+      color: chalk.redBright,
+      link: (text: string) => chalk.redBright(terminalLink(text, 'https://dave.io/go/instagram'))
     },
     {
       icon: '🔗',
       name: 'LinkedIn',
       url: 'https://dave.io/go/linkedin',
-      color: chalk.yellow,
-      link: (text: string) => chalk.yellow(terminalLink(text, 'https://dave.io/go/linkedin'))
+      color: chalk.yellowBright,
+      link: (text: string) => chalk.yellowBright(terminalLink(text, 'https://dave.io/go/linkedin'))
     },
     {
       icon: '🐘',
       name: 'Mastodon',
       url: 'https://dave.io/go/mastodon',
-      color: chalk.green,
-      link: (text: string) => chalk.green(terminalLink(text, 'https://dave.io/go/mastodon'))
+      color: chalk.greenBright,
+      link: (text: string) => chalk.greenBright(terminalLink(text, 'https://dave.io/go/mastodon'))
     },
     {
       icon: '🔮',
       name: 'Pillowfort',
       url: 'https://dave.io/go/pillowfort',
-      color: chalk.blue,
-      link: (text: string) => chalk.blue(terminalLink(text, 'https://dave.io/go/pillowfort'))
+      color: chalk.blueBright,
+      link: (text: string) => chalk.blueBright(terminalLink(text, 'https://dave.io/go/pillowfort'))
     },
     {
       icon: '🧵',
       name: 'Threads',
       url: 'https://dave.io/go/threads',
-      color: chalk.magenta,
-      link: (text: string) => chalk.magenta(terminalLink(text, 'https://dave.io/go/threads'))
+      color: chalk.magentaBright,
+      link: (text: string) => chalk.magentaBright(terminalLink(text, 'https://dave.io/go/threads'))
     },
     {
       icon: '📱',
       name: 'Tumblr',
       url: 'https://dave.io/go/tumblr',
-      color: chalk.red,
-      link: (text: string) => chalk.red(terminalLink(text, 'https://dave.io/go/tumblr'))
+      color: chalk.redBright,
+      link: (text: string) => chalk.redBright(terminalLink(text, 'https://dave.io/go/tumblr'))
     },
     {
       icon: '🎥',
       name: 'YouTube',
       url: 'https://dave.io/go/youtube',
-      color: chalk.yellow,
-      link: (text: string) => chalk.yellow(terminalLink(text, 'https://dave.io/go/youtube'))
+      color: chalk.yellowBright,
+      link: (text: string) => chalk.yellowBright(terminalLink(text, 'https://dave.io/go/youtube'))
     },
     {
       icon: '☠️',
