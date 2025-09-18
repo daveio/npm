@@ -1,11 +1,10 @@
 import ansiEscapes from 'ansi-escapes'
 import cfonts from 'cfonts'
 import chalk from 'chalk'
-import chalkAnimation from 'chalk-animation'
 import cliSpinners from 'cli-spinners'
 import Table from 'cli-table3'
 import figlet from 'figlet'
-import { atlas, cristal, pastel, vice } from 'gradient-string'
+import gradientString, { atlas, cristal, pastel, vice } from 'gradient-string'
 import { get as getEmoji } from 'node-emoji'
 import ora from 'ora'
 import sparkly from 'sparkly'
@@ -518,11 +517,28 @@ async function main(): Promise<void> {
   // Display quick links
   displayQuickLinks()
 
-  // Final sparkle animation
+  // Final separator - use gradient instead of animation to avoid overwriting
   console.log()
-  const finalAnimation = chalkAnimation.rainbow('═'.repeat(90))
-  await sleep(1000)
-  finalAnimation.stop()
+  console.log()
+
+  // Use a static gradient line instead of animated rainbow to prevent content overwriting
+  const finalLine = '═'.repeat(90)
+  if (!process.env.NO_ANIMATIONS && !process.env.SKIP_ANIMATIONS && !process.env.NO_COLOR) {
+    // Animated gradient effect that doesn't clear previous lines
+    console.log(pastel(finalLine))
+    // Small animation without using chalkAnimation which causes overwrites
+    for (let i = 0; i < 3; i++) {
+      await sleep(300)
+      process.stdout.write(`\r${gradientString.rainbow(finalLine)}`)
+    }
+    console.log() // Move to next line after animation
+  } else if (!process.env.NO_COLOR) {
+    // Static colored line when animations are disabled
+    console.log(chalk.magenta(finalLine))
+  } else {
+    // Plain line when colors are disabled
+    console.log(finalLine)
+  }
 
   // Final message
   console.log()
