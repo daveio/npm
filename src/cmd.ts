@@ -1,18 +1,18 @@
 #!/usr/bin/env bun
 
 import pkg from '../package.json' with { type: 'json' }
-import index from './index.ts'
+import main from './index.ts'
 
-// Check for --version flag
-if (process.argv.includes('--version') || process.argv.includes('-v')) {
+const args = process.argv.slice(2)
+const isVersionFlag = args.some((arg) => arg === '--version' || arg === '-v')
+
+if (isVersionFlag) {
   console.log(pkg.version)
   process.exit(0)
 }
 
-// Execute the main function
-index().catch((error: Error) => {
-  console.error('An error occurred:', error)
+main().catch((error: unknown) => {
+  const message = error instanceof Error ? error.message : 'Unknown error occurred'
+  console.error('An error occurred:', message)
   process.exit(1)
 })
-
-export default {}
