@@ -56,4 +56,3 @@ export interface SocialLink {
   readonly color: chalk.ChalkFunction
   readonly link: (text: string) => string
 }
-
