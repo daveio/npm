@@ -11,11 +11,11 @@
     "url": "https://github.com/daveio/npm/issues"
   },
   "dependencies": {
-    "ansi-escapes": "^7.1.0",
+    "ansi-escapes": "^7.1.1",
     "cfonts": "^3.3.1",
     "chalk": "^5.6.2",
     "chalk-animation": "^2.0.3",
-    "cli-spinners": "^3.2.1",
+    "cli-spinners": "^3.3.0",
     "cli-table3": "^0.6.5",
     "figlet": "^1.9.3",
     "gradient-string": "^3.0.0",
@@ -26,12 +26,12 @@
   },
   "description": "Meta package for Dave Williams",
   "devDependencies": {
-    "@biomejs/biome": "^2.2.4",
-    "@types/bun": "^1.2.22",
-    "typescript": "^5.9.2"
+    "@biomejs/biome": "^2.2.5",
+    "@types/bun": "^1.2.23",
+    "typescript": "^5.9.3"
   },
   "engines": {
-    "bun": "^1.2.22"
+    "bun": "^1.2.23"
   },
   "files": [
     "dist"
@@ -40,7 +40,7 @@
   "license": "MIT",
   "main": "./dist/cmd.js",
   "name": "dave.io",
-  "packageManager": "bun@1.2.22",
+  "packageManager": "bun@1.2.23",
   "repository": {
     "type": "git",
     "url": "https://github.com/daveio/npm.git"
