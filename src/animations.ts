@@ -47,7 +47,9 @@ function renderMatrixFrame(width: number, height: number, drops: Float32Array, c
   }
 
   frameBuffer.push(...lines)
-  if (height > 0) frameBuffer.push('\n')
+  if (height > 0) {
+    frameBuffer.push('\n')
+  }
 
   return frameBuffer
 }
@@ -174,7 +176,7 @@ export async function glitchEffect(
     return
   }
 
-  const glitchChars = ANIMATION_CONFIG.glitchEffect.glitchChars
+  const {glitchChars} = ANIMATION_CONFIG.glitchEffect
 
   try {
     for (let i = 0; i < iterations; i++) {
