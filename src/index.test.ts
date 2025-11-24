@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, spyOn } from 'bun:test'
-import main from './index.js'
+import main from './index.ts'
 
 describe('main export', () => {
   // Setup variables for testing

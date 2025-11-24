@@ -17,7 +17,7 @@
     "url": "https://dave.io"
   },
   "type": "module",
-  "main": "./dist/cmd.js",
+  "main": "./dist/index.js",
   "bin": {
     "dave.io": "./dist/cmd.js"
   },

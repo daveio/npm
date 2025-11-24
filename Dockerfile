@@ -47,4 +47,4 @@ RUN bun run build
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD bun dist/cmd.js || exit 1
 
 # Set the default command to run the CLI
-CMD ["bun", "src/cmd.ts"]
+CMD ["bun", "dist/cmd.js"]

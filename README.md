@@ -59,7 +59,7 @@ dave();
 Or, if you're still clinging to CommonJS:
 
 ```js
-const dave = await import("dave.io");
+const { default: dave } = await import("dave.io");
 
 dave();
 ```
