@@ -112,5 +112,5 @@ None currently.
 
 From [README.md](README.md):
 - Add `--cv` / `-c` parameter to dump CV
-- Fetch links and CV from personal API (<https://github.com/daveio/dave.io>)
+- Fetch links and CV from personal API (<https://github.com/daveio/dave-io>)
 - Always maintain static fallback
