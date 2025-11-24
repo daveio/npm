@@ -69,6 +69,7 @@ dave();
 - Written in **TypeScript**, because more code is more better.
 - Built and tested (no, really) with `bun`, because  `npm` and `yarn` don't break enough.
 - Linted with `biome`, because someone has to care about code style.
+- **For detailed codebase documentation, see [AGENTS.md](AGENTS.md)**.
 
 If you want to contribute, ask yourself: why?
 

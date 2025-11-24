@@ -44,7 +44,7 @@ COPY --chown=dave-io:dave-io . .
 RUN bun run build
 
 # Add a healthcheck to ensure the application is working
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD bun dist/cmd.js || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD node dist/cmd.js || exit 1
 
 # Set the default command to run the CLI
-CMD ["bun", "dist/cmd.js"]
+CMD ["node", "dist/cmd.js"]
