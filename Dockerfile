@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Use a minimal base image
-FROM alpine:3.23.0 AS base
+FROM alpine:3.23.2 AS base
 
 # Install dependencies for bun (with version pinning)
 RUN apk update \
