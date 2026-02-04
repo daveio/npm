@@ -1,116 +1,68 @@
-# dave.io - Meta Package
+# Agent Guide for dave.io/npm
 
-## Overview
+This repository contains the source code for the `dave.io` npm package, a CLI-based "business card" for Dave Williams.
 
-This is a personal meta package/CLI tool for Dave Williams that displays professional information and social media links in a visually appealing terminal interface.
+## ⚡️ Quick Start
 
-## Architecture
-
-### Entry Points
-
-- **CLI Entry:** [src/cmd.ts](src/cmd.ts) - Command-line interface entry point
-- **Programmatic Entry:** [src/index.ts](src/index.ts) - Main function export for programmatic use
-
-### Key Components
-
-#### Main Display ([src/index.ts](src/index.ts))
-
-The main module exports an async function that:
-
-1. **Update Check** (lines 11-14): Uses `update-notifier` to check for package updates
-2. **Loading Animation** (lines 35-42): Displays a spinner while "loading" the profile (2s delay)
-3. **Title Display** (lines 44-58): Renders an ASCII art box with name and version using gradient colors
-4. **Intro Animation** (lines 60-70): Shows an animated rainbow introduction text, then replaces it with a gradient version
-5. **Social Links Table** (lines 72-212): Displays a borderless table containing:
-   - Personal website link
-   - Pronouns (they/them) with explainer link
-   - Social media links (Bluesky, GitHub, Instagram, LinkedIn, Mastodon, etc.)
-   - Professional links (CV, TODO list, talks, stories)
-
-All links use OSC-8 hyperlinks for clickable terminal links.
-
-#### Command Entry ([src/cmd.ts](src/cmd.ts))
-
-- Imports and executes the main function from [index.ts](src/index.ts)
-- Catches and logs any errors
-- Exits with code 1 on error
-
-### Technologies & Dependencies
-
-- **Runtime:** Bun (development) / Node.js (production)
-- **Language:** TypeScript (compiles to JavaScript)
-- **Build:** Bun bundler with minification and source maps
-- **Linter:** Biome
-- **Test Framework:** Bun test
-
-### Build Process
-
-The build process ([package.json](package.json) line 29):
-1. Cleans the `dist/` directory
-2. Bundles `src/index.ts` and `src/cmd.ts` with Bun
-3. Targets Node.js runtime
-4. Enables minification and source maps
-5. Outputs to `dist/` directory
-
-### Configuration Files
-
-- [tsconfig.json](tsconfig.json): TypeScript configuration (ES2022, NodeNext modules, strict mode)
-- [biome.json](biome.json): Linter rules and code style configuration
-- [Dockerfile](Dockerfile): Multi-stage Alpine-based container build
-- [package.json](package.json): Package metadata, scripts, and dependencies
-
-### Docker Setup
-
-The [Dockerfile](Dockerfile) creates a minimal Alpine-based container that:
-- Installs Bun runtime
-- Installs dependencies
-- Builds the project
-- Runs the compiled JavaScript CLI
-- Includes health checks
-
-### Testing
-
-Tests are in [src/index.test.ts](src/index.test.ts) and verify:
-- Console output contains expected content
-- Main website URL is displayed
-- Social links are present
-
-### Type Definitions
-
-Custom type definitions in `src/types/`:
-- [cli-table3.d.ts](src/types/cli-table3.d.ts): Type definitions for cli-table3
-- [chalk-animation.d.ts](src/types/chalk-animation.d.ts): Type definitions for chalk-animation
-- [chalk.d.ts](src/types/chalk.d.ts): Type definitions for chalk
-
-## Development Workflow
+This project uses **Bun** for package management, script execution, and testing.
 
 ```bash
-# Start dev server
+# Install dependencies
+bun install
+
+# Run the CLI locally
 bun run start
 
 # Run tests
-bun run test
-
-# Lint code
-bun run lint
-
-# Fix lint issues
-bun run lint:fix
-
-# Build for production
-bun run build
-
-# Build and run Docker container
-bun run docker
+bun test
 ```
 
-## Known Issues
+## 🛠 Project Structure
 
-None currently.
+- **Runtime**: Bun (check `bun.lock`)
+- **Language**: TypeScript
+- **Linter/Formatter**: Biome (`biome.json`)
+- **Entry Points**:
+  - `src/index.ts`: Core logic (exports default async function).
+  - `src/cmd.ts`: CLI executable wrapper (calls `index.ts`).
+- **Tests**: `src/index.test.ts` (uses `bun:test`).
+- **Types**: `src/types/` contains declarations for untyped dependencies.
 
-## Future Enhancements
+## 🤖 Common Commands
 
-From [README.md](README.md):
-- Add `--cv` / `-c` parameter to dump CV
-- Fetch links and CV from personal API (<https://github.com/daveio/dave-io>)
-- Always maintain static fallback
+| Command | Description |
+|---------|-------------|
+| `bun run start` | Run the CLI tool locally |
+| `bun run build` | Build for Node.js target (outputs to `dist/`) |
+| `bun run test` | Run unit tests |
+| `bun run lint` | Check code style with Biome |
+| `bun run lint:fix` | Auto-fix code style issues |
+| `bun run docker` | Build and run the Docker container |
+| `bun run tape` | Record terminal demo (requires `vhs` and `gif2webp`) |
+
+## 🏗 Architecture & Patterns
+
+### CLI Output
+- **Styling**: Uses `chalk` for colors and `gradient-string` for gradients.
+- **Animation**: Uses `chalk-animation` and `ora` spinners.
+- **Layout**: Uses `cli-table3` for the links table.
+- **Hyperlinks**: Uses OSC-8 escape sequences via a helper function to make links clickable.
+
+### Code Style
+- **Formatting**: Strict adherence to Biome rules.
+- **Imports**: ES Modules (`import`/`export`).
+- **Async/Await**: Used heavily for animations (e.g., `sleep` helper).
+- **Type Safety**: TypeScript used throughout. `src/types/` covers missing `@types/*` packages.
+
+## 🧪 Testing
+
+- **Runner**: Native `bun:test`.
+- **Mocking**: `spyOn(console, 'log')` is used to capture and verify CLI output.
+- **Pattern**: Tests run against the exported function from `src/index.ts`, not the CLI wrapper.
+
+## ⚠️ Gotchas & Notes
+
+1. **Node.js Compatibility**: While developed with Bun, the build targets Node.js (`--target node`) for wider distribution via npm.
+2. **Type Definitions**: Some dependencies (`chalk-animation`, `update-notifier`) lack official types. Check `src/types/` before adding `@ts-ignore`.
+3. **Animations**: The code uses `process.stdout.write` with ANSI escape codes to overwrite lines for animations.
+4. **Environment**: `mise.toml` locks the Bun version.
