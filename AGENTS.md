@@ -30,25 +30,27 @@ bun test
 
 ## 🤖 Common Commands
 
-| Command | Description |
-|---------|-------------|
-| `bun run start` | Run the CLI tool locally |
-| `bun run build` | Build for Node.js target (outputs to `dist/`) |
-| `bun run test` | Run unit tests |
-| `bun run lint` | Check code style with Biome |
-| `bun run lint:fix` | Auto-fix code style issues |
-| `bun run docker` | Build and run the Docker container |
-| `bun run tape` | Record terminal demo (requires `vhs` and `gif2webp`) |
+| Command            | Description                                          |
+| ------------------ | ---------------------------------------------------- |
+| `bun run start`    | Run the CLI tool locally                             |
+| `bun run build`    | Build for Node.js target (outputs to `dist/`)        |
+| `bun run test`     | Run unit tests                                       |
+| `bun run lint`     | Check code style with Biome                          |
+| `bun run lint:fix` | Auto-fix code style issues                           |
+| `bun run docker`   | Build and run the Docker container                   |
+| `bun run tape`     | Record terminal demo (requires `vhs` and `gif2webp`) |
 
 ## 🏗 Architecture & Patterns
 
 ### CLI Output
+
 - **Styling**: Uses `chalk` for colors and `gradient-string` for gradients.
 - **Animation**: Uses `chalk-animation` and `ora` spinners.
 - **Layout**: Uses `cli-table3` for the links table.
 - **Hyperlinks**: Uses OSC-8 escape sequences via a helper function to make links clickable.
 
 ### Code Style
+
 - **Formatting**: Strict adherence to Biome rules.
 - **Imports**: ES Modules (`import`/`export`).
 - **Async/Await**: Used heavily for animations (e.g., `sleep` helper).
