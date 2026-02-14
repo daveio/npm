@@ -26,8 +26,8 @@ lint:
     - prettier
   enabled:
     - actionlint@1.7.7
-    - biome@2.3.14
-    - checkov@3.2.500
+    - biome@2.3.15
+    - checkov@3.2.501
     - circleci@0.1.32638
     - djlint@1.36.4
     - dotenv-linter@3.3.0
@@ -46,7 +46,7 @@ lint:
     - semgrep@1.151.0
     - shellcheck@0.10.0
     - shfmt@3.6.0
-    - stylelint@17.1.1
+    - stylelint@17.3.0
     - svgo@4.0.0
     - taplo@0.9.3
     - trivy@0.63.0
