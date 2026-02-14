@@ -1,60 +1,60 @@
 {
-  "name": "dave.io",
-  "version": "1.0.6",
-  "description": "Meta package for Dave Williams",
-  "homepage": "https://github.com/daveio/npm#readme",
-  "bugs": {
-    "url": "https://github.com/daveio/npm/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/daveio/npm.git"
-  },
-  "license": "MIT",
   "author": {
-    "name": "Dave Williams",
     "email": "dave@dave.io",
+    "name": "Dave Williams",
     "url": "https://dave.io"
   },
-  "type": "module",
-  "main": "./dist/index.js",
   "bin": {
     "dave.io": "./dist/cmd.js"
   },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "start": "bun src/cmd.ts",
-    "build": "bun run clean && bun build --target node --minify --sourcemap ./src/index.ts ./src/cmd.ts --outdir dist",
-    "clean": "rm -rf dist",
-    "test": "bun test",
-    "lint": "bun x @biomejs/biome check .",
-    "lint:fix": "bun x @biomejs/biome check --write .",
-    "prepublishOnly": "bun run lint:fix && bun run test && bun run build",
-    "docker:build": "docker build -t dave-io:latest -f Dockerfile .",
-    "docker:run": "docker run -it --rm dave-io:latest",
-    "docker": "bun run docker:build && bun run docker:run",
-    "tape": "vhs npm.tape && gif2webp -mixed -sharp_yuv -m 6 -min_size -mt -v assets/npm.gif -o assets/npm.webp && rm assets/npm.gif"
+  "bugs": {
+    "url": "https://github.com/daveio/npm/issues"
   },
   "dependencies": {
     "chalk": "^5.6.2",
     "chalk-animation": "^2.0.3",
     "cli-table3": "^0.6.5",
     "gradient-string": "^3.0.0",
-    "ora": "^9.1.0",
+    "ora": "^9.3.0",
     "update-notifier": "^7.3.1"
   },
-  "packageManager": "bun@1.3.7",
-  "engines": {
-    "bun": "^1.3.7"
-  },
+  "description": "Meta package for Dave Williams",
   "devDependencies": {
-    "@biomejs/biome": "^2.3.13",
-    "@types/bun": "^1.3.7",
+    "@biomejs/biome": "^2.3.15",
+    "@types/bun": "^1.3.9",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "bun": "^1.3.9"
+  },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/daveio/npm#readme",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "name": "dave.io",
+  "packageManager": "bun@1.3.9",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daveio/npm.git"
+  },
+  "scripts": {
+    "build": "bun run clean && bun build --target node --minify --sourcemap ./src/index.ts ./src/cmd.ts --outdir dist",
+    "clean": "rm -rf dist",
+    "docker": "bun run docker:build && bun run docker:run",
+    "docker:build": "docker build -t dave-io:latest -f Dockerfile .",
+    "docker:run": "docker run -it --rm dave-io:latest",
+    "lint": "bun x @biomejs/biome check .",
+    "lint:fix": "bun x @biomejs/biome check --write .",
+    "prepublishOnly": "bun run lint:fix && bun run test && bun run build",
+    "start": "bun src/cmd.ts",
+    "tape": "vhs npm.tape && gif2webp -mixed -sharp_yuv -m 6 -min_size -mt -v assets/npm.gif -o assets/npm.webp && rm assets/npm.gif",
+    "test": "bun test"
   },
   "trustedDependencies": [
     "@biomejs/biome"
-  ]
+  ],
+  "type": "module",
+  "version": "1.0.6"
 }
