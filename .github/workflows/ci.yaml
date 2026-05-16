@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Lint with Trunk
-        uses: trunk-io/trunk-action@bf81325059d2534b31df5365182237788c5e0338
+        uses: trunk-io/trunk-action@04ba50e7658c81db7356da96657e6e77f220bfa3
   test:
     name: test
     runs-on: ubuntu-latest
